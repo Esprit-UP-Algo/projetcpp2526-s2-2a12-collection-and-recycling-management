@@ -1,0 +1,14 @@
+# ninja log v6
+5	465	7925531380854040	mission_autogen/timestamp	5da8dd6114609030
+5	465	7925531380854040	mission_autogen/mocs_compilation.cpp	5da8dd6114609030
+5	465	7925531380854040	C:/Users/LENOVO/Desktop/qt/mission/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/mission_autogen/timestamp	5da8dd6114609030
+5	465	7925531380854040	C:/Users/LENOVO/Desktop/qt/mission/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/mission_autogen/mocs_compilation.cpp	5da8dd6114609030
+472	1635	7925531381460440	CMakeFiles/mission.dir/mission_autogen/mocs_compilation.cpp.obj	bf379d8527d7d828
+478	2147	7925531381492541	CMakeFiles/mission.dir/mission.cpp.obj	c3efaed87083ba9d
+9	150	7925535678819995	mission_autogen/timestamp	5da8dd6114609030
+9	150	7925535678819995	mission_autogen/mocs_compilation.cpp	5da8dd6114609030
+9	150	7925535678819995	C:/Users/LENOVO/Desktop/qt/mission/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/mission_autogen/timestamp	5da8dd6114609030
+9	150	7925535678819995	C:/Users/LENOVO/Desktop/qt/mission/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/mission_autogen/mocs_compilation.cpp	5da8dd6114609030
+150	1266	7925535680282630	CMakeFiles/mission.dir/main.cpp.obj	2b02785670aeb0cd
+153	1732	7925535680312680	CMakeFiles/mission.dir/mission.cpp.obj	c3efaed87083ba9d
+1732	1877	7925535696104121	mission.exe	a9d4ee00e742ee08

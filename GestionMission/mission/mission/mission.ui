@@ -1,0 +1,1113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GestionMission</class>
+ <widget class="QMainWindow" name="GestionMission">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1243</width>
+    <height>657</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Gestion des Missions</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+    /* Style principal - Fond noir */
+    QMainWindow {
+        background-color: #1E1E1E;
+    }
+
+    QWidget#centralwidget {
+        background-color: #1E1E1E;
+    }
+
+    /* Style de la sidebar */
+    #sidebar {
+        background-color: #2D2D2D;
+        border-right: 1px solid #3D3D3D;
+    }
+
+    #sidebar QPushButton {
+        background: transparent;
+        border: none;
+        padding: 12px;
+        text-align: left;
+        font-size: 14px;
+        color: #FFFFFF;
+        border-radius: 5px;
+        margin: 2px 8px;
+    }
+
+    #sidebar QPushButton:hover {
+        background-color: #9BE15D;
+        color: #1E1E1E;
+    }
+
+    #sidebar QLabel {
+        color: #9BE15D;
+        font-weight: bold;
+        padding-left: 12px;
+        padding-top: 15px;
+    }
+
+    #sidebar QLabel#labelTitleSidebar {
+        color: #FFFFFF;
+        font-size: 16px;
+        padding: 20px 12px;
+        border-bottom: 1px solid #3D3D3D;
+    }
+
+    /* Style des groupes */
+    QGroupBox {
+        font-weight: bold;
+        border: 1px solid #3D3D3D;
+        border-radius: 10px;
+        margin-top: 10px;
+        padding-top: 10px;
+        background-color: #2D2D2D;
+        color: #FFFFFF;
+    }
+
+    QGroupBox::title {
+        subcontrol-origin: margin;
+        left: 20px;
+        padding: 0 10px 0 10px;
+        color: #9BE15D;
+    }
+
+    /* Style des tableaux */
+    QTableView, QTableWidget {
+        background-color: #2D2D2D;
+        border-radius: 10px;
+        gridline-color: #3D3D3D;
+        selection-background-color: #9BE15D;
+        selection-color: #1E1E1E;
+        alternate-background-color: #353535;
+        color: #FFFFFF;
+    }
+
+    QTableView::item:hover, QTableWidget::item:hover {
+        background-color: rgba(155, 225, 93, 0.3);
+    }
+
+    QTableView::item, QTableWidget::item {
+        padding: 5px;
+        border-bottom: 1px solid #3D3D3D;
+    }
+
+    /* Style des en-têtes de tableau */
+    QHeaderView::section {
+        background-color: #1E1E1E;
+        color: #9BE15D;
+        padding: 10px;
+        font-weight: bold;
+        border: none;
+        border-bottom: 2px solid #9BE15D;
+    }
+
+    /* Style des boutons */
+    QPushButton {
+        background-color: #7ED957;
+        color: #1E1E1E;
+        border-radius: 5px;
+        padding: 10px;
+        font-size: 14px;
+        font-weight: bold;
+        border: none;
+    }
+
+    QPushButton:hover {
+        background-color: #6AC94F;
+    }
+
+    QPushButton.btnDanger {
+        background-color: #FF6B6B;
+        color: white;
+    }
+
+    QPushButton.btnDanger:hover {
+        background-color: #FF5252;
+    }
+
+    QPushButton#btnLogout {
+        background-color: transparent;
+        color: #FF6B6B;
+        border: 1px solid #FF6B6B;
+    }
+
+    QPushButton#btnLogout:hover {
+        background-color: #FF6B6B;
+        color: white;
+    }
+
+    /* Style des labels */
+    QLabel {
+        color: #FFFFFF;
+        font-size: 13px;
+    }
+
+    QLabel[bold="true"] {
+        font-weight: bold;
+        color: #9BE15D;
+    }
+
+    /* Style des champs de saisie */
+    QLineEdit, QSpinBox, QDoubleSpinBox, QComboBox, QDateEdit, QTimeEdit, QTextEdit {
+        border: 1px solid #3D3D3D;
+        border-radius: 5px;
+        padding: 8px;
+        background-color: #353535;
+        color: #FFFFFF;
+        font-size: 13px;
+    }
+
+    QLineEdit:focus, QSpinBox:focus, QDoubleSpinBox:focus, QComboBox:focus, QDateEdit:focus, QTimeEdit:focus, QTextEdit:focus {
+        border: 1px solid #9BE15D;
+        background-color: #404040;
+    }
+
+    QLineEdit:hover, QSpinBox:hover, QDoubleSpinBox:hover, QComboBox:hover, QDateEdit:hover, QTimeEdit:hover, QTextEdit:hover {
+        border: 1px solid #9BE15D;
+    }
+
+    /* Style des combobox dropdown */
+    QComboBox QAbstractItemView {
+        background-color: #2D2D2D;
+        color: #FFFFFF;
+        selection-background-color: #9BE15D;
+        selection-color: #1E1E1E;
+        border: 1px solid #3D3D3D;
+    }
+
+    /* Style de la barre de statut */
+    QStatusBar {
+        background-color: #2D2D2D;
+        color: #9BE15D;
+        border-top: 1px solid #3D3D3D;
+    }
+
+    /* Style de la barre de recherche */
+    QLineEdit#rechercheMission {
+        background-color: #353535;
+        color: #FFFFFF;
+        border: 1px solid #3D3D3D;
+    }
+
+    QLineEdit#rechercheMission:focus {
+        border: 1px solid #9BE15D;
+    }
+   </string>
+  </property>
+
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="mainLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="QFrame" name="contentFrame">
+      <property name="styleSheet">
+       <string notr="true">
+        QFrame {
+            background-color: #1E1E1E;
+        }
+       </string>
+      </property>
+      <layout class="QVBoxLayout" name="contentLayout">
+       <property name="spacing">
+        <number>20</number>
+       </property>
+       <property name="leftMargin">
+        <number>30</number>
+       </property>
+       <property name="topMargin">
+        <number>30</number>
+       </property>
+       <property name="rightMargin">
+        <number>30</number>
+       </property>
+       <property name="bottomMargin">
+        <number>30</number>
+       </property>
+
+       <!-- En-tête avec titre -->
+       <item>
+        <layout class="QHBoxLayout" name="headerLayout">
+         <item>
+          <widget class="QLabel" name="labelTitle">
+           <property name="font">
+            <font>
+             <pointsize>-1</pointsize>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">
+             color: #9BE15D;
+             padding: 10px 0;
+            </string>
+           </property>
+           <property name="text">
+            <string>🎯 Gestion des Missions</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="headerSpacer">
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnExportHeader">
+           <property name="text">
+            <string>📊 Exporter</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+
+       <!-- Formulaire et tableau -->
+       <item>
+        <layout class="QHBoxLayout" name="formAndTableLayout">
+         <property name="spacing">
+          <number>20</number>
+         </property>
+
+         <!-- Formulaire -->
+         <item>
+          <widget class="QGroupBox" name="groupBox">
+           <property name="minimumSize">
+            <size>
+             <width>400</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>400</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="title">
+            <string>📝 Formulaire Mission</string>
+           </property>
+           <layout class="QVBoxLayout" name="formLayout">
+            <property name="spacing">
+             <number>15</number>
+            </property>
+            <property name="leftMargin">
+             <number>20</number>
+            </property>
+            <property name="topMargin">
+             <number>30</number>
+            </property>
+            <property name="rightMargin">
+             <number>20</number>
+            </property>
+
+            <!-- ID Mission -->
+            <item>
+             <layout class="QHBoxLayout" name="layoutId">
+              <item>
+               <widget class="QLabel" name="labelId">
+                <property name="minimumSize">
+                 <size>
+                  <width>120</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>-1</pointsize>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>🆔 ID Mission :</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="idMission">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>35</height>
+                 </size>
+                </property>
+                <property name="placeholderText">
+                 <string>MSN-001</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+
+            <!-- Type -->
+            <item>
+             <layout class="QHBoxLayout" name="layoutType">
+              <item>
+               <widget class="QLabel" name="label_2">
+                <property name="minimumSize">
+                 <size>
+                  <width>120</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>-1</pointsize>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>📋 Type :</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="typeMission">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>35</height>
+                 </size>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Collecte</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Maintenance</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Inspection</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Installation</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Réparation</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Sensibilisation</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+
+            <!-- Date -->
+            <item>
+             <layout class="QHBoxLayout" name="layoutDate">
+              <item>
+               <widget class="QLabel" name="label_3">
+                <property name="minimumSize">
+                 <size>
+                  <width>120</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>-1</pointsize>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>📅 Date :</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QDateEdit" name="dateMission">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>35</height>
+                 </size>
+                </property>
+                <property name="calendarPopup">
+                 <bool>true</bool>
+                </property>
+                <property name="date">
+                 <date>
+                  <year>2026</year>
+                  <month>2</month>
+                  <day>12</day>
+                 </date>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+
+            <!-- Durée -->
+            <item>
+             <layout class="QHBoxLayout" name="layoutDuree">
+              <item>
+               <widget class="QLabel" name="label_4">
+                <property name="minimumSize">
+                 <size>
+                  <width>120</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>-1</pointsize>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>⏱️ Durée :</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QTimeEdit" name="dureeMission">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>35</height>
+                 </size>
+                </property>
+                <property name="displayFormat">
+                 <string>HH:mm</string>
+                </property>
+                <property name="time">
+                 <time>
+                  <hour>2</hour>
+                  <minute>0</minute>
+                  <second>0</second>
+                 </time>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="labelDureeHint">
+                <property name="text">
+                 <string>(HH:MM)</string>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">color: #9E9E9E; font-size: 11px;</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+
+            <!-- Équipe assignée -->
+            <item>
+             <layout class="QHBoxLayout" name="layoutEquipe">
+              <item>
+               <widget class="QLabel" name="label_5">
+                <property name="minimumSize">
+                 <size>
+                  <width>120</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>-1</pointsize>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>👥 Équipe :</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="equipeMission">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>35</height>
+                 </size>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Équipe Alpha</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Équipe Beta</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Équipe Gamma</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Équipe Delta</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Non assignée</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+
+            <!-- Zone -->
+            <item>
+             <layout class="QHBoxLayout" name="layoutZone">
+              <item>
+               <widget class="QLabel" name="label_6">
+                <property name="minimumSize">
+                 <size>
+                  <width>120</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>-1</pointsize>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>🗺️ Zone :</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="zoneMission">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>35</height>
+                 </size>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Zone Nord</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Zone Sud</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Zone Est</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Zone Ouest</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Centre</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+
+            <!-- État -->
+            <item>
+             <layout class="QHBoxLayout" name="layoutEtat">
+              <item>
+               <widget class="QLabel" name="label_7">
+                <property name="minimumSize">
+                 <size>
+                  <width>120</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>-1</pointsize>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>⚙️ État :</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="etatMission">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>35</height>
+                 </size>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Planifiée</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>En cours</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Terminée</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Annulée</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>En attente</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+
+            <!-- Priorité -->
+            <item>
+             <layout class="QHBoxLayout" name="layoutPriorite">
+              <item>
+               <widget class="QLabel" name="label_8">
+                <property name="minimumSize">
+                 <size>
+                  <width>120</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>-1</pointsize>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>⚠️ Priorité :</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="prioriteMission">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>35</height>
+                 </size>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Critique</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Haute</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Moyenne</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Basse</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+
+            <!-- Description -->
+            <item>
+             <layout class="QHBoxLayout" name="layoutDescription">
+              <item>
+               <widget class="QLabel" name="label_9">
+                <property name="minimumSize">
+                 <size>
+                  <width>120</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>-1</pointsize>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>📄 Description :</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QTextEdit" name="descriptionMission">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>60</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>60</height>
+                 </size>
+                </property>
+                <property name="placeholderText">
+                 <string>Description de la mission...</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+
+            <!-- Espaceur -->
+            <item>
+             <spacer name="formSpacer">
+              <property name="orientation">
+               <enum>Qt::Orientation::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+
+            <!-- Boutons CRUD -->
+            <item>
+             <layout class="QHBoxLayout" name="buttonsFormLayout">
+              <item>
+               <widget class="QPushButton" name="btnEnregistrer">
+                <property name="minimumSize">
+                 <size>
+                  <width>110</width>
+                  <height>40</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>➕ Enregistrer</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnModifier">
+                <property name="minimumSize">
+                 <size>
+                  <width>110</width>
+                  <height>40</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>✏️ Modifier</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnAnnuler">
+                <property name="minimumSize">
+                 <size>
+                  <width>110</width>
+                  <height>40</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">background-color: #FF6B6B; color: white;</string>
+                </property>
+                <property name="text">
+                 <string>🗑️ Annuler</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+
+         <!-- Tableau -->
+         <item>
+          <widget class="QGroupBox" name="groupBox_2">
+           <property name="title">
+            <string>📊 Liste des Missions</string>
+           </property>
+           <layout class="QVBoxLayout" name="tableLayout">
+            <property name="spacing">
+             <number>15</number>
+            </property>
+
+            <!-- Barre d'outils -->
+            <item>
+             <layout class="QHBoxLayout" name="toolbarLayout">
+              <item>
+               <widget class="QLineEdit" name="rechercheMission">
+                <property name="minimumSize">
+                 <size>
+                  <width>200</width>
+                  <height>35</height>
+                 </size>
+                </property>
+                <property name="placeholderText">
+                 <string>🔍 Rechercher une mission...</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnRechercher">
+                <property name="minimumSize">
+                 <size>
+                  <width>100</width>
+                  <height>35</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Rechercher</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnRefresh">
+                <property name="minimumSize">
+                 <size>
+                  <width>100</width>
+                  <height>35</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>🔄 Refresh</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnTrier">
+                <property name="minimumSize">
+                 <size>
+                  <width>100</width>
+                  <height>35</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>📊 Trier</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="toolbarSpacer">
+                <property name="orientation">
+                 <enum>Qt::Orientation::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+
+            <!-- TableView -->
+            <item>
+             <widget class="QTableView" name="tableViewMission">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>300</height>
+               </size>
+              </property>
+              <property name="alternatingRowColors">
+               <bool>true</bool>
+              </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+              </property>
+             </widget>
+            </item>
+
+            <!-- Boutons d'action -->
+            <item>
+             <layout class="QHBoxLayout" name="actionButtonsLayout">
+              <item>
+               <widget class="QPushButton" name="btnSupprimer">
+                <property name="minimumSize">
+                 <size>
+                  <width>100</width>
+                  <height>35</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">background-color: #FF6B6B; color: white;</string>
+                </property>
+                <property name="text">
+                 <string>🗑️ Supprimer</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnExportTable">
+                <property name="minimumSize">
+                 <size>
+                  <width>100</width>
+                  <height>35</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>📊 Export</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnStatistiques">
+                <property name="minimumSize">
+                 <size>
+                  <width>100</width>
+                  <height>35</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>📈 Stats</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnRetour">
+                <property name="minimumSize">
+                 <size>
+                  <width>100</width>
+                  <height>35</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">background-color: #6C757D; color: white;</string>
+                </property>
+                <property name="text">
+                 <string>◀ Retour</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnQuitter">
+                <property name="minimumSize">
+                 <size>
+                  <width>100</width>
+                  <height>35</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">background-color: #FF6B6B; color: white;</string>
+                </property>
+                <property name="text">
+                 <string>🚪 Quitter</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="actionSpacer">
+                <property name="orientation">
+                 <enum>Qt::Orientation::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1243</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">
+     background-color: #2D2D2D;
+     color: #FFFFFF;
+    </string>
+   </property>
+  </widget>
+
+  <widget class="QStatusBar" name="statusbar">
+   <property name="styleSheet">
+    <string notr="true">
+     background-color: #2D2D2D;
+     color: #9BE15D;
+     border-top: 1px solid #3D3D3D;
+     font-weight: bold;
+    </string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
