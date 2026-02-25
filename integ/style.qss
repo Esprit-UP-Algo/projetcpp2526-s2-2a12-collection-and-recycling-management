@@ -1,0 +1,167 @@
+/*
+    OurLabib - Pro Design System
+    A sleek dark theme inspired by the Employer design
+    Colors: Background #1E1E1E, Containers #2D2D2D, Accent #9BE15D
+*/
+
+/* --- Global Elements --- */
+QMainWindow, QWidget#centralwidget {
+    background-color: #1E1E1E;
+    color: #FFFFFF;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+/* --- Layout Containers --- */
+QStackedWidget {
+    background: transparent;
+}
+
+/* --- Module Pages Background (logo.png) --- */
+#pageEmployes, #pageEquipes, #pageZones, #pagePoubelles, #pageMissions,
+#pageCalendrier, #pageMail, #pageSMS, #pageQRCode,
+#pageStatsEquipe, #pageExportEquipe, #pageTrierEquipe,
+#pageStatsZone, #pageExportZone, #pageTrierZone,
+#pageStatsPoubelle, #pageExportPoubelle, #pageTrierPoubelle,
+#pageStatsMission, #pageExportMission, #pageTrierMission {
+    border-image: url(:/logo.png) 0 0 0 0 stretch stretch;
+}
+
+QGroupBox {
+    background-color: #2D2D2D;
+    border: 1px solid #3D3D3D;
+    border-radius: 10px;
+    margin-top: 20px;
+    padding-top: 10px;
+    color: #FFFFFF;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 20px;
+    padding: 0 10px;
+    color: #9BE15D;
+    font-weight: bold;
+}
+
+/* --- Navigation Sidebar (MainMenu) --- */
+QFrame#menuFrame {
+    background-color: white;
+    border-right: 1px solid #E0E0E0;
+}
+
+QFrame#menuFrame QPushButton {
+    background: transparent;
+    border: none;
+    padding: 12px 20px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1E3A3A;
+    border-radius: 8px;
+    margin: 2px 15px;
+}
+
+QFrame#menuFrame QPushButton:hover {
+    background-color: #F1F8F1;
+}
+
+QLabel#labelMainTitle {
+    color: #1E3A3A;
+    font-size: 24px;
+    font-weight: bold;
+    padding: 20px;
+    border-bottom: 3px solid #7ED957;
+    margin: 10px 20px;
+}
+
+/* --- Tables System --- */
+QTableView, QTableWidget {
+    background-color: #2D2D2D;
+    border-radius: 10px;
+    gridline-color: #3D3D3D;
+    selection-background-color: #9BE15D;
+    selection-color: #1E1E1E;
+    alternate-background-color: #353535;
+    color: #FFFFFF;
+    border: 1px solid #3D3D3D;
+}
+
+QHeaderView::section {
+    background-color: #1E1E1E;
+    color: #9BE15D;
+    padding: 10px;
+    font-weight: bold;
+    border: none;
+    border-bottom: 2px solid #9BE15D;
+}
+
+/* --- Buttons System --- */
+QPushButton {
+    background-color: #7ED957;
+    color: #1E1E1E;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-weight: bold;
+    border: none;
+}
+
+QPushButton:hover {
+    background-color: #6AC94F;
+}
+
+/* Danger / Logout Buttons */
+QPushButton#btnLogout, QPushButton.btnDanger, QPushButton[objectName*="sup"] {
+    background-color: #FF6B6B;
+    color: white;
+}
+
+QPushButton#btnLogout:hover, QPushButton.btnDanger:hover, QPushButton[objectName*="sup"]:hover {
+    background-color: #FF5252;
+}
+
+/* Action / Secondary Buttons */
+QPushButton[objectName^="btnRetour"], QPushButton#btnAnnuler {
+    background-color: transparent;
+    color: #FFFFFF;
+    border: 1px solid #3D3D3D;
+}
+
+QPushButton[objectName^="btnRetour"]:hover, QPushButton#btnAnnuler:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* --- Input Fields --- */
+QLineEdit, QSpinBox, QDoubleSpinBox, QComboBox, QTextEdit {
+    border: 1px solid #3D3D3D;
+    border-radius: 5px;
+    padding: 8px;
+    background-color: #353535;
+    color: #FFFFFF;
+}
+
+QLineEdit:focus, QSpinBox:focus, QDoubleSpinBox:focus, QComboBox:focus {
+    border: 2px solid #9BE15D;
+    background-color: #404040;
+}
+
+/* --- Status Bar --- */
+QStatusBar {
+    background-color: #2D2D2D;
+    color: #9BE15D;
+    border-top: 1px solid #3D3D3D;
+}
+
+/* --- Login Page Specifics --- */
+#pageLogin QFrame#loginFrame {
+    background-color: rgba(220, 240, 220, 220);
+    border: 3px solid rgba(100, 180, 100, 150);
+}
+
+#pageLogin QLabel { color: #1B5E20; font-weight: bold; }
+#pageLogin QLineEdit { background: rgba(255, 255, 255, 240); color: #2E7D32; border: 2px solid #90EE90; }
+#pageLogin QPushButton { background-color: #7ED957; color: white; border-radius: 18px; }
+
+/* --- Main Menu Page Specifics --- */
+#pageMainMenu {
+    background-color: white;
+}
