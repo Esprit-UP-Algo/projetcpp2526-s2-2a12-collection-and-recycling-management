@@ -1,0 +1,61 @@
+# Fichiers de compilation Qt
+build/
+*.o
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+*.out
+moc_*.cpp
+ui_*.h
+qrc_*.cpp
+
+# Fichiers Qt Creator
+*.user
+*.user.*
+*.qbs
+*.qbs.user
+*.creator
+*.creator.user
+*.pro.user.#35#
+.qtc
+.qtc_clangd
+Qt_Project
+
+# Fichiers temporaires
+*~
+*.swp
+*.swo
+*.tmp
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.vs/
+
+# C++ 
+*.o
+*.obj
+*.lib
+*.exp
+*.ilk
+*.pdb
+
+# Qt autogen
+*/ui_*.h
+*/moc_*.cpp
+
+# CMake
+CMakeFiles/
+cmake_install.cmake
+CMakeCache.txt
+Makefile
+
+# Dependencies
+*.pri
+
+# Erreurs de build
+*.rcc

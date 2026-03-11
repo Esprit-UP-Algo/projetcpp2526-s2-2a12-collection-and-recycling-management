@@ -1,0 +1,5033 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ourlabib</class>
+ <widget class="QMainWindow" name="ourlabib">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1000</width>
+    <height>650</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1000</width>
+    <height>650</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1000</width>
+    <height>650</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>ourlabib - Gestion de Déchets</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="mainLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="QStackedWidget" name="stackedWidget">
+      <property name="currentIndex">
+       <number>3</number>
+      </property>
+      <widget class="QWidget" name="pageLogin">
+       <property name="styleSheet">
+        <string notr="true">
+  QWidget#pageLogin {
+            border-image: url(:/p1.png);
+            background-position: center;
+            background-repeat: no-repeat;
+         }
+         QFrame#loginFrame {
+            background-color: rgba(220, 240, 220, 220);
+            border-radius: 20px;
+            border: 3px solid rgba(100, 180, 100, 150);
+            padding: 5px;
+         }
+         QLabel { color: #1B5E20; font-weight: bold; }
+         QLabel#label_title { color: #145A32; font-size: 18px; }
+         QLineEdit {
+            background: rgba(255, 255, 255, 240);
+            border-radius: 15px;
+            padding: 10px;
+            border: 2px solid #90EE90;
+            font-size: 13px;
+            color: #2E7D32;
+         }
+         QPushButton#pushButton_login {
+            background-color: #7ED957;
+            color: white;
+            border-radius: 18px;
+            padding: 10px;
+            font-weight: bold;
+            font-size: 14px;
+         }
+        </string>
+       </property>
+       <layout class="QHBoxLayout" name="loginLayout">
+        <item>
+         <spacer name="loginLeftSpacer">
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>30</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QFrame" name="loginFrame">
+          <property name="minimumSize">
+           <size>
+            <width>350</width>
+            <height>420</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>350</width>
+            <height>420</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+          <layout class="QVBoxLayout" name="loginFrameLayout">
+           <item>
+            <spacer name="loginTopSpacer">
+             <property name="orientation">
+              <enum>Qt::Orientation::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>15</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_title">
+             <property name="text">
+              <string>Login Here</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="loginTitleSpacer">
+             <property name="orientation">
+              <enum>Qt::Orientation::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>15</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_username">
+             <property name="text">
+              <string>Username</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="lineEdit_username">
+             <property name="placeholderText">
+              <string>Enter your username</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="loginUsernameSpacer">
+             <property name="orientation">
+              <enum>Qt::Orientation::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>10</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_password">
+             <property name="text">
+              <string>Password</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="lineEdit_password">
+             <property name="echoMode">
+              <enum>QLineEdit::EchoMode::Password</enum>
+             </property>
+             <property name="placeholderText">
+              <string>Enter your password</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="loginPasswordSpacer">
+             <property name="orientation">
+              <enum>Qt::Orientation::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>12</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBox">
+             <property name="text">
+              <string>I'm not a robot</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="loginCheckboxSpacer">
+             <property name="orientation">
+              <enum>Qt::Orientation::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>15</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_login">
+             <property name="text">
+              <string>Log In</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="loginButtonSpacer">
+             <property name="orientation">
+              <enum>Qt::Orientation::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>10</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_forgot">
+             <property name="text">
+              <string>&lt;a href=&quot;#&quot;&gt;Forgot password?&lt;/a&gt;</string>
+             </property>
+             <property name="textFormat">
+              <enum>Qt::TextFormat::RichText</enum>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="loginBottomSpacer">
+             <property name="orientation">
+              <enum>Qt::Orientation::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>15</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageMainMenu">
+       <property name="styleSheet">
+        <string notr="true">
+         QPushButton {
+            background: transparent;
+            border: none;
+            padding: 12px 20px;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1E3A3A;
+            border-radius: 8px;
+            margin: 2px 15px;
+         }
+         QPushButton:hover { background-color: rgba(255,255,255,0.4); }
+         QLabel { color: #2C5F2D; font-weight: bold; font-size: 13px; }
+         QLabel#labelMainTitle {
+            color: #1E3A3A;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 20px;
+            border-bottom: 3px solid #9BE15D;
+            margin: 10px 20px;
+         }
+         QPushButton#btnLogout {
+            background-color: #FF6B6B;
+            color: white;
+            font-weight: bold;
+            margin-top: 20px;
+         }
+        </string>
+       </property>
+       <layout class="QHBoxLayout" name="mainMenuLayout">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QFrame" name="menuFrame">
+          <property name="minimumSize">
+           <size>
+            <width>400</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>400</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">
+            QFrame { border-right: 1px solid #E0E0E0; }
+           </string>
+          </property>
+          <layout class="QVBoxLayout" name="menuLayout">
+           <item>
+            <widget class="QLabel" name="labelMainTitle">
+             <property name="text">
+              <string>👥 Menu Principal</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="spacerTop">
+             <property name="orientation">
+              <enum>Qt::Orientation::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Policy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btnEmployes">
+             <property name="text">
+              <string>💼 Employés</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btnZones">
+             <property name="text">
+              <string>🗺️ Zones</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btnPoubelles">
+             <property name="text">
+              <string>🗑️ Poubelles</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btnEquipes">
+             <property name="text">
+              <string>👥 Équipes</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btnMissions">
+             <property name="text">
+              <string>🎯 Missions</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Orientation::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btnLogout">
+             <property name="text">
+              <string>🚪 Logout</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="labelVersion">
+             <property name="text">
+              <string>Version 1.0.0</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QFrame" name="imageFrame">
+          <property name="styleSheet">
+           <string notr="true">border-image: url(:/pp2.jpg);
+            QFrame {
+                background-color: white;
+                background-image: url(:/bf.png);
+                background-repeat: no-repeat;
+                background-position: center;
+                border: none;
+            }
+           </string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageEmployes">
+       <layout class="QVBoxLayout" name="layoutEmployes">
+        <property name="spacing">
+         <number>20</number>
+        </property>
+        <property name="leftMargin">
+         <number>30</number>
+        </property>
+        <property name="topMargin">
+         <number>30</number>
+        </property>
+        <property name="rightMargin">
+         <number>30</number>
+        </property>
+        <property name="bottomMargin">
+         <number>30</number>
+        </property>
+        <item>
+         <layout class="QHBoxLayout" name="headerEmployes">
+          <item>
+           <widget class="QPushButton" name="btnRetourEmployes">
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>◀ Retour</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTitleEmployes">
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>👥 Gestion des Employés</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="headerSpacerEmployes">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="contentEmployes">
+          <property name="spacing">
+           <number>20</number>
+          </property>
+          <item>
+           <widget class="QGroupBox" name="groupBoxEmployes">
+            <property name="minimumSize">
+             <size>
+              <width>400</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>400</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="title">
+             <string>📝 Formulaire Employé</string>
+            </property>
+            <layout class="QVBoxLayout" name="formLayoutEmployes">
+             <property name="spacing">
+              <number>15</number>
+             </property>
+             <property name="leftMargin">
+              <number>20</number>
+             </property>
+             <property name="topMargin">
+              <number>30</number>
+             </property>
+             <property name="rightMargin">
+              <number>20</number>
+             </property>
+             <item>
+              <layout class="QHBoxLayout" name="layoutIdEmploye">
+               <item>
+                <widget class="QLabel" name="labelIdEmploye">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>🆔 ID Employé :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="idEmploye">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="placeholderText">
+                  <string>EMP-001</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutNomEmploye">
+               <item>
+                <widget class="QLabel" name="labelNomEmploye">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>👤 Nom complet :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="nomEmploye">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="placeholderText">
+                  <string>Jean Dupont</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutEmailEmploye">
+               <item>
+                <widget class="QLabel" name="labelEmailEmploye">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>📧 Email :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="emailEmploye">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="placeholderText">
+                  <string>jean.dupont@email.com</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutPosteEmploye">
+               <item>
+                <widget class="QLabel" name="labelPosteEmploye">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>💼 Poste :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="posteEmploye">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>Chef d'équipe</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Technicien</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Agent de terrain</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Superviseur</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Opérateur</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutDisponibiliteEmploye">
+               <item>
+                <widget class="QLabel" name="labelDispoEmploye">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>⏰ Disponibilité :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="disponibiliteEmploye">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>Disponible</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>En mission</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Congé</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Formation</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutHeuresEmploye">
+               <item>
+                <widget class="QLabel" name="labelHeuresEmploye">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>⏱️ Heures travail :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QSpinBox" name="heuresTravailEmploye">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="suffix">
+                  <string> h/semaine</string>
+                 </property>
+                 <property name="minimum">
+                  <number>20</number>
+                 </property>
+                 <property name="maximum">
+                  <number>40</number>
+                 </property>
+                 <property name="value">
+                  <number>35</number>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutSalaireEmploye">
+               <item>
+                <widget class="QLabel" name="labelSalaireEmploye">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>💰 Salaire :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QDoubleSpinBox" name="salaireEmploye">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="prefix">
+                  <string>€ </string>
+                 </property>
+                 <property name="minimum">
+                  <double>1500.000000000000000</double>
+                 </property>
+                 <property name="maximum">
+                  <double>5000.000000000000000</double>
+                 </property>
+                 <property name="value">
+                  <double>2500.000000000000000</double>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutSexeEmploye">
+               <item>
+                <widget class="QLabel" name="labelSexeEmploye">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>⚥ Sexe :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="sexeEmploye">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>Masculin</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Féminin</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Non spécifié</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <spacer name="formSpacerEmployes">
+               <property name="orientation">
+                <enum>Qt::Orientation::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="buttonsFormEmployes">
+               <item>
+                <widget class="QPushButton" name="btnEnregistrerEmploye">
+                 <property name="minimumSize">
+                  <size>
+                   <width>110</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>➕ Enregistrer</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btnModifierEmploye">
+                 <property name="minimumSize">
+                  <size>
+                   <width>110</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>✏️ Modifier</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btnAnnulerEmploye">
+                 <property name="minimumSize">
+                  <size>
+                   <width>110</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>🗑️ Annuler</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBoxTableEmployes">
+            <property name="title">
+             <string>📊 Liste des Employés</string>
+            </property>
+            <layout class="QVBoxLayout" name="tableLayoutEmployes">
+             <property name="spacing">
+              <number>15</number>
+             </property>
+             <item>
+              <layout class="QHBoxLayout" name="toolbarEmployes">
+               <item>
+                <widget class="QLineEdit" name="rechercheEmploye">
+                 <property name="minimumSize">
+                  <size>
+                   <width>200</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="placeholderText">
+                  <string>🔍 Rechercher un employé...</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btnRechercherEmploye">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>Rechercher</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btnRefreshEmploye">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>🔄 Refresh</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="toolbarSpacerEmployes">
+                 <property name="orientation">
+                  <enum>Qt::Orientation::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QTableWidget" name="tableEmployes">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>300</height>
+                </size>
+               </property>
+               <property name="alternatingRowColors">
+                <bool>true</bool>
+               </property>
+               <property name="selectionBehavior">
+                <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+               </property>
+               <property name="columnCount">
+                <number>8</number>
+               </property>
+               <attribute name="horizontalHeaderStretchLastSection">
+                <bool>true</bool>
+               </attribute>
+               <column>
+                <property name="text">
+                 <string>ID</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Nom</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Email</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Poste</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Disponibilité</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Heures</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Salaire</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Sexe</string>
+                </property>
+               </column>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="actionButtonsEmployes">
+               <item>
+                <widget class="QPushButton" name="btnSupprimerEmploye">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>🗑️ Supprimer</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btnStatistiquesEmployes">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>📈 Stats</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btnExportEmploye">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>📊 Export</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btnTrierEmploye">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>📊 Trier</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="actionSpacerEmployes">
+                 <property name="orientation">
+                  <enum>Qt::Orientation::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageEquipes">
+       <layout class="QVBoxLayout" name="layoutEquipes">
+        <property name="spacing">
+         <number>20</number>
+        </property>
+        <property name="leftMargin">
+         <number>30</number>
+        </property>
+        <property name="topMargin">
+         <number>30</number>
+        </property>
+        <property name="rightMargin">
+         <number>30</number>
+        </property>
+        <property name="bottomMargin">
+         <number>30</number>
+        </property>
+        <item>
+         <layout class="QHBoxLayout" name="headerEquipes">
+          <item>
+           <widget class="QPushButton" name="btnRetourEquipes">
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>◀ Retour</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTitleEquipes">
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>👥 Gestion des Équipes</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="headerSpacerEquipes">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnChatbotEquipes">
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>🤖 Chatbot</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnSMS">
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>📱 SMS</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="contentEquipes">
+          <property name="spacing">
+           <number>20</number>
+          </property>
+          <item>
+           <widget class="QGroupBox" name="groupBoxEquipes">
+            <property name="minimumSize">
+             <size>
+              <width>400</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>400</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="title">
+             <string>📝 Formulaire Équipe</string>
+            </property>
+            <layout class="QVBoxLayout" name="formLayoutEquipes">
+             <property name="spacing">
+              <number>15</number>
+             </property>
+             <property name="leftMargin">
+              <number>20</number>
+             </property>
+             <property name="topMargin">
+              <number>30</number>
+             </property>
+             <property name="rightMargin">
+              <number>20</number>
+             </property>
+             <item>
+              <layout class="QHBoxLayout" name="layoutIdEquipe">
+               <item>
+                <widget class="QLabel" name="labelIdEquipe">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>🆔 ID Équipe :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="idEQ">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true"/>
+                 </property>
+                 <property name="placeholderText">
+                  <string>EQ-001</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutNomEquipe">
+               <item>
+                <widget class="QLabel" name="labelNomEquipe">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>👥 Nom Équipe :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="nomEQ">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="placeholderText">
+                  <string>Équipe Alpha</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutZoneEquipe">
+               <item>
+                <widget class="QLabel" name="labelZoneEquipe">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>📍 Zone couverte :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="zoneCEQ">
+                 <property name="placeholderText">
+                  <string>Zone Couverte</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutChefEquipe">
+               <item>
+                <widget class="QLabel" name="labelChefEquipe">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>👤 Chef d'équipe :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="chefEQ">
+                 <property name="placeholderText">
+                  <string>chef d'équipe</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutMembresEquipe">
+               <item>
+                <widget class="QLabel" name="labelMembresEquipe">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>👥 Nombre membres :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="nbMembresEQ">
+                 <property name="placeholderText">
+                  <string>Nombre Membres</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutDateEquipe">
+               <item>
+                <widget class="QLabel" name="labelDateEquipe">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>📅 Date mission :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QDateEdit" name="dateEQ">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="calendarPopup">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutStatutEquipe">
+               <item>
+                <widget class="QLabel" name="labelStatutEquipe">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>⚙️ Statut :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="statutEQ">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>Active</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>En mission</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>En repos</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Formation</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <spacer name="formSpacerEquipes">
+               <property name="orientation">
+                <enum>Qt::Orientation::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="buttonsFormEquipes">
+               <item>
+                <widget class="QPushButton" name="enrgstEQ">
+                 <property name="minimumSize">
+                  <size>
+                   <width>110</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>➕ Enregistrer</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="modifEQ">
+                 <property name="minimumSize">
+                  <size>
+                   <width>110</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>✏️ Modifier</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="anulEQ">
+                 <property name="minimumSize">
+                  <size>
+                   <width>110</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>🗑️ Annuler</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBoxTableEquipes">
+            <property name="title">
+             <string>📊 Liste des Équipes</string>
+            </property>
+            <layout class="QVBoxLayout" name="tableLayoutEquipes">
+             <property name="spacing">
+              <number>15</number>
+             </property>
+             <item>
+              <layout class="QHBoxLayout" name="toolbarEquipes">
+               <item>
+                <widget class="QLineEdit" name="rechEQ">
+                 <property name="minimumSize">
+                  <size>
+                   <width>200</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="placeholderText">
+                  <string>🔍 Rechercher une équipe...</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="rechercheEQ">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>Rechercher</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="refreshEQ">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>🔄 Refresh</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="toolbarSpacerEquipes">
+                 <property name="orientation">
+                  <enum>Qt::Orientation::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QTableView" name="tableViewEQ">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>300</height>
+                </size>
+               </property>
+               <property name="alternatingRowColors">
+                <bool>true</bool>
+               </property>
+               <property name="selectionBehavior">
+                <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="actionButtonsEquipes">
+               <item>
+                <widget class="QPushButton" name="supEQ">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>🗑️ Supprimer</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="statEQ">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>📈 Stats</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="exportEQ">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>📊 Export</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="trieEQ">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>📊 Trier</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="actionSpacerEquipes">
+                 <property name="orientation">
+                  <enum>Qt::Orientation::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageZones">
+       <layout class="QVBoxLayout" name="layoutZones">
+        <property name="spacing">
+         <number>20</number>
+        </property>
+        <property name="leftMargin">
+         <number>30</number>
+        </property>
+        <property name="topMargin">
+         <number>30</number>
+        </property>
+        <property name="rightMargin">
+         <number>30</number>
+        </property>
+        <property name="bottomMargin">
+         <number>30</number>
+        </property>
+        <item>
+         <layout class="QHBoxLayout" name="headerZones">
+          <item>
+           <widget class="QPushButton" name="btnRetourZones">
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>◀ Retour</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTitleZones">
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>🗺️ Gestion des Zones</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="headerSpacerZones">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnMap">
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>🗺️ Map</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnChatbot">
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>🤖 Chatbot</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="contentZones">
+          <property name="spacing">
+           <number>20</number>
+          </property>
+          <item>
+           <widget class="QGroupBox" name="groupBoxZones">
+            <property name="minimumSize">
+             <size>
+              <width>400</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>400</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="title">
+             <string>📝 Formulaire Zone</string>
+            </property>
+            <layout class="QVBoxLayout" name="formLayoutZones">
+             <property name="spacing">
+              <number>15</number>
+             </property>
+             <property name="leftMargin">
+              <number>20</number>
+             </property>
+             <property name="topMargin">
+              <number>30</number>
+             </property>
+             <property name="rightMargin">
+              <number>20</number>
+             </property>
+             <item>
+              <layout class="QHBoxLayout" name="layoutIdZone">
+               <item>
+                <widget class="QLabel" name="labelIdZone">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>🆔 ID Zone :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="idzone">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="placeholderText">
+                  <string>ZNE-001</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutNomZone">
+               <item>
+                <widget class="QLabel" name="labelNomZone">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>📍 Nom Zone :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="nomzone">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="placeholderText">
+                  <string>Zone Nord</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutTypeZone">
+               <item>
+                <widget class="QLabel" name="labelTypeZone">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>🏭 Localisation :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="localisationzone"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutSuperficieZone">
+               <item>
+                <widget class="QLabel" name="labelSuperficieZone">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>📐 Superfice :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="superfice"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutPopulationZone">
+               <item>
+                <widget class="QLabel" name="labelPopulationZone">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>👥 Population :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="population"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutPoubellesZone">
+               <item>
+                <widget class="QLabel" name="labelPoubellesZone">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>🗑️ Nb Poubelles :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="nbpoubelle"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutPrioriteZone">
+               <item>
+                <widget class="QLabel" name="labelPrioriteZone">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>⚠️ Priorité :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="prioritzone">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>Haute</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Moyenne</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Basse</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Critique</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <spacer name="formSpacerZones">
+               <property name="orientation">
+                <enum>Qt::Orientation::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="buttonsFormZones">
+               <item>
+                <widget class="QPushButton" name="enregistrerzone">
+                 <property name="minimumSize">
+                  <size>
+                   <width>110</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>➕ Enregistrer</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="modifzone">
+                 <property name="minimumSize">
+                  <size>
+                   <width>110</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>✏️ Modifier</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="annlzone">
+                 <property name="minimumSize">
+                  <size>
+                   <width>110</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>🗑️ Annuler</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBoxTableZones">
+            <property name="title">
+             <string>📊 Liste des Zones</string>
+            </property>
+            <layout class="QVBoxLayout" name="tableLayoutZones">
+             <property name="spacing">
+              <number>15</number>
+             </property>
+             <item>
+              <layout class="QHBoxLayout" name="toolbarZones">
+               <item>
+                <widget class="QLineEdit" name="recherchezone">
+                 <property name="minimumSize">
+                  <size>
+                   <width>200</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="placeholderText">
+                  <string>🔍 Rechercher une zone...</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="rechzone">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>Rechercher</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="refreshzone">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>🔄 Refresh</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="toolbarSpacerZones">
+                 <property name="orientation">
+                  <enum>Qt::Orientation::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QTableView" name="tableViewZones">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>300</height>
+                </size>
+               </property>
+               <property name="alternatingRowColors">
+                <bool>true</bool>
+               </property>
+               <property name="selectionBehavior">
+                <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="actionButtonsZones">
+               <item>
+                <widget class="QPushButton" name="supzone">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>🗑️ Supprimer</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="statzone">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>📈 Stats</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="exportzone">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>📊 Export</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="triezone">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>📊 Trier</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="actionSpacerZones">
+                 <property name="orientation">
+                  <enum>Qt::Orientation::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pagePoubelles">
+       <layout class="QVBoxLayout" name="layoutPoubelles">
+        <property name="spacing">
+         <number>20</number>
+        </property>
+        <property name="leftMargin">
+         <number>30</number>
+        </property>
+        <property name="topMargin">
+         <number>30</number>
+        </property>
+        <property name="rightMargin">
+         <number>30</number>
+        </property>
+        <property name="bottomMargin">
+         <number>30</number>
+        </property>
+        <item>
+         <layout class="QHBoxLayout" name="headerPoubelles">
+          <item>
+           <widget class="QPushButton" name="btnRetourPoubelles">
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>◀ Retour</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTitlePoubelles">
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>🗑️ Gestion des Poubelles</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="headerSpacerPoubelles">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnChatbotPoubelles">
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>🤖 Chatbot</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnQRCode">
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>🔍 QR Code</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="contentPoubelles">
+          <property name="spacing">
+           <number>20</number>
+          </property>
+          <item>
+           <widget class="QGroupBox" name="groupBoxPoubelles">
+            <property name="minimumSize">
+             <size>
+              <width>400</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>400</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="title">
+             <string>📝 Formulaire Poubelle</string>
+            </property>
+            <layout class="QVBoxLayout" name="formLayoutPoubelles">
+             <property name="spacing">
+              <number>15</number>
+             </property>
+             <property name="leftMargin">
+              <number>20</number>
+             </property>
+             <property name="topMargin">
+              <number>30</number>
+             </property>
+             <property name="rightMargin">
+              <number>20</number>
+             </property>
+             <item>
+              <layout class="QHBoxLayout" name="layoutIdPoubelle">
+               <item>
+                <widget class="QLabel" name="labelIdPoubelle">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>🆔 ID Poubelle :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="idPoubelle">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="placeholderText">
+                  <string>PBL-001</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutTypePoubelle">
+               <item>
+                <widget class="QLabel" name="labelTypePoubelle">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>🗑️ Type :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="typePoubelle">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>Plastique</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Verre</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Papier</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Métal</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Déchets organiques</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Déchets généraux</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutLocalisationPoubelle">
+               <item>
+                <widget class="QLabel" name="labelLocalisationPoubelle">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>📍 Localisation :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="localisationPoubelle">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="placeholderText">
+                  <string>Zone Nord, Rue Principale</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutZonePoubelle">
+               <item>
+                <widget class="QLabel" name="labelZonePoubelle">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>🗺️ Zone :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="zonePoubelle">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>Zone Nord</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Zone Sud</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Zone Est</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Zone Ouest</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Centre</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutCapacitePoubelle">
+               <item>
+                <widget class="QLabel" name="labelCapacitePoubelle">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>📦 Capacité :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QSpinBox" name="capacitePoubelle">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="suffix">
+                  <string> L</string>
+                 </property>
+                 <property name="maximum">
+                  <number>5000</number>
+                 </property>
+                 <property name="value">
+                  <number>240</number>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutRemplissagePoubelle">
+               <item>
+                <widget class="QLabel" name="labelRemplissagePoubelle">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>📊 Remplissage :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QSpinBox" name="remplissagePoubelle">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="suffix">
+                  <string> %</string>
+                 </property>
+                 <property name="maximum">
+                  <number>100</number>
+                 </property>
+                 <property name="value">
+                  <number>0</number>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutStatutPoubelle">
+               <item>
+                <widget class="QLabel" name="labelStatutPoubelle">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>⚙️ Statut :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="statutPoubelle">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>Disponible</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Plein</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>En maintenance</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Hors service</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutDatePoubelle">
+               <item>
+                <widget class="QLabel" name="labelDatePoubelle">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>📅 Dernière collecte :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QDateEdit" name="datePoubelle">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="calendarPopup">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <spacer name="formSpacerPoubelles">
+               <property name="orientation">
+                <enum>Qt::Orientation::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="buttonsFormPoubelles">
+               <item>
+                <widget class="QPushButton" name="btnEnregistrerPoubelle">
+                 <property name="minimumSize">
+                  <size>
+                   <width>110</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>➕ Enregistrer</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btnModifierPoubelle">
+                 <property name="minimumSize">
+                  <size>
+                   <width>110</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>✏️ Modifier</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btnAnnulerPoubelle">
+                 <property name="minimumSize">
+                  <size>
+                   <width>110</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>🗑️ Annuler</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBoxTablePoubelles">
+            <property name="title">
+             <string>📊 Liste des Poubelles</string>
+            </property>
+            <layout class="QVBoxLayout" name="tableLayoutPoubelles">
+             <property name="spacing">
+              <number>15</number>
+             </property>
+             <item>
+              <layout class="QHBoxLayout" name="toolbarPoubelles">
+               <item>
+                <widget class="QLineEdit" name="recherchePoubelle">
+                 <property name="minimumSize">
+                  <size>
+                   <width>200</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="placeholderText">
+                  <string>🔍 Rechercher une poubelle...</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btnRechercherPoubelle">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>Rechercher</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btnRefreshPoubelle">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>🔄 Refresh</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="toolbarSpacerPoubelles">
+                 <property name="orientation">
+                  <enum>Qt::Orientation::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QTableView" name="tableViewPoubelles">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>300</height>
+                </size>
+               </property>
+               <property name="alternatingRowColors">
+                <bool>true</bool>
+               </property>
+               <property name="selectionBehavior">
+                <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="actionButtonsPoubelles">
+               <item>
+                <widget class="QPushButton" name="btnSupprimerPoubelle">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>🗑️ Supprimer</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btnStatistiquesPoubelles">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>📈 Stats</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btnExportPoubelle">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>📊 Export</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btnTrierPoubelle">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>📊 Trier</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="actionSpacerPoubelles">
+                 <property name="orientation">
+                  <enum>Qt::Orientation::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageMissions">
+       <layout class="QVBoxLayout" name="layoutMissions">
+        <property name="spacing">
+         <number>20</number>
+        </property>
+        <property name="leftMargin">
+         <number>30</number>
+        </property>
+        <property name="topMargin">
+         <number>30</number>
+        </property>
+        <property name="rightMargin">
+         <number>30</number>
+        </property>
+        <property name="bottomMargin">
+         <number>30</number>
+        </property>
+        <item>
+         <layout class="QHBoxLayout" name="headerMissions">
+          <item>
+           <widget class="QPushButton" name="btnRetourMissions">
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>◀ Retour</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTitleMissions">
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>🎯 Gestion des Missions</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="headerSpacerMissions">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnCalendrier">
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>📅 Calendrier</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnMail">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>📧 Mail Automatique</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="contentMissions">
+          <property name="spacing">
+           <number>20</number>
+          </property>
+          <item>
+           <widget class="QGroupBox" name="groupBoxMissions">
+            <property name="minimumSize">
+             <size>
+              <width>400</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>400</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="title">
+             <string>📝 Formulaire Mission</string>
+            </property>
+            <layout class="QVBoxLayout" name="formLayoutMissions">
+             <property name="spacing">
+              <number>15</number>
+             </property>
+             <property name="leftMargin">
+              <number>20</number>
+             </property>
+             <property name="topMargin">
+              <number>30</number>
+             </property>
+             <property name="rightMargin">
+              <number>20</number>
+             </property>
+             <item>
+              <layout class="QHBoxLayout" name="layoutIdMission">
+               <item>
+                <widget class="QLabel" name="labelIdMission">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>🆔 ID Mission :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="idMission">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="placeholderText">
+                  <string>MSN-001</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutTypeMission">
+               <item>
+                <widget class="QLabel" name="labelTypeMission">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>📋 Type :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="typeMission">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>Collecte</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Maintenance</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Inspection</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Installation</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Réparation</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Sensibilisation</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutDateMission">
+               <item>
+                <widget class="QLabel" name="labelDateMission">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>📅 Date :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QDateEdit" name="dateMission">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="calendarPopup">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutDureeMission">
+               <item>
+                <widget class="QLabel" name="labelDureeMission">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>⏱️ Durée :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QTimeEdit" name="dureeMission">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="displayFormat">
+                  <string>HH:mm</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutEquipeMission">
+               <item>
+                <widget class="QLabel" name="labelEquipeMission">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>👥 Équipe :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="equipeMission">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>Équipe Alpha</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Équipe Beta</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Équipe Gamma</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Équipe Delta</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Non assignée</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutZoneMission">
+               <item>
+                <widget class="QLabel" name="labelZoneMission">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>🗺️ Zone :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="zoneMission">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>Zone Nord</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Zone Sud</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Zone Est</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Zone Ouest</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Centre</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutEtatMission">
+               <item>
+                <widget class="QLabel" name="labelEtatMission">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>⚙️ État :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="etatMission">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>Planifiée</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>En cours</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Terminée</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Annulée</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>En attente</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutPrioriteMission">
+               <item>
+                <widget class="QLabel" name="labelPrioriteMission">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>⚠️ Priorité :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="prioriteMission">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>Critique</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Haute</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Moyenne</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Basse</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="layoutDescriptionMission">
+               <item>
+                <widget class="QLabel" name="labelDescriptionMission">
+                 <property name="minimumSize">
+                  <size>
+                   <width>120</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>📄 Description :</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QTextEdit" name="descriptionMission">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>60</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>60</height>
+                  </size>
+                 </property>
+                 <property name="placeholderText">
+                  <string>Description de la mission...</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <spacer name="formSpacerMissions">
+               <property name="orientation">
+                <enum>Qt::Orientation::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="buttonsFormMissions">
+               <item>
+                <widget class="QPushButton" name="btnEnregistrerMission">
+                 <property name="minimumSize">
+                  <size>
+                   <width>110</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>➕ Enregistrer</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btnModifierMission">
+                 <property name="minimumSize">
+                  <size>
+                   <width>110</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>✏️ Modifier</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btnAnnulerMission">
+                 <property name="minimumSize">
+                  <size>
+                   <width>110</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>🗑️ Annuler</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBoxTableMissions">
+            <property name="title">
+             <string>📊 Liste des Missions</string>
+            </property>
+            <layout class="QVBoxLayout" name="tableLayoutMissions">
+             <property name="spacing">
+              <number>15</number>
+             </property>
+             <item>
+              <layout class="QHBoxLayout" name="toolbarMissions">
+               <item>
+                <widget class="QLineEdit" name="rechercheMission">
+                 <property name="minimumSize">
+                  <size>
+                   <width>200</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="placeholderText">
+                  <string>🔍 Rechercher une mission...</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btnRechercherMission">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>Rechercher</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btnRefreshMission">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>🔄 Refresh</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="toolbarSpacerMissions">
+                 <property name="orientation">
+                  <enum>Qt::Orientation::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QTableView" name="tableViewMission">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>300</height>
+                </size>
+               </property>
+               <property name="alternatingRowColors">
+                <bool>true</bool>
+               </property>
+               <property name="selectionBehavior">
+                <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="actionButtonsMissions">
+               <item>
+                <widget class="QPushButton" name="btnSupprimerMission">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>🗑️ Supprimer</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btnStatistiquesMissions">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>📈 Stats</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btnExportMission">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>📊 Export</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btnTrierMission">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>📊 Trier</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="actionSpacerMissions">
+                 <property name="orientation">
+                  <enum>Qt::Orientation::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageMap">
+       <layout class="QVBoxLayout" name="layoutMap">
+        <item>
+         <layout class="QHBoxLayout" name="headerMap">
+          <item>
+           <widget class="QPushButton" name="btnRetourMap">
+            <property name="text">
+             <string>◀ Retour</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTitleMap">
+            <property name="text">
+             <string>🗺️ Map Interface</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="spacerMap">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QFrame" name="frameMapPlaceholder">
+          <property name="styleSheet">
+           <string notr="true">background-color: rgba(46, 204, 113, 0.1); border: 2px dashed #2ECC71; border-radius: 10px;</string>
+          </property>
+          <layout class="QVBoxLayout" name="layoutMapPlaceholder">
+           <item>
+            <widget class="QLabel" name="labelMapText">
+             <property name="text">
+              <string>Map Display Area</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageChatbot">
+       <layout class="QVBoxLayout" name="layoutChatbot">
+        <item>
+         <layout class="QHBoxLayout" name="headerChatbot">
+          <item>
+           <widget class="QPushButton" name="btnRetourChatbot">
+            <property name="text">
+             <string>◀ Retour</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTitleChatbot">
+            <property name="text">
+             <string>🤖 Chatbot Assistant</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="spacerChatbot">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTextEdit" name="chatHistory">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="layoutInputChat">
+          <item>
+           <widget class="QLineEdit" name="chatInput">
+            <property name="placeholderText">
+             <string>Posez votre question ici...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnSendMessage">
+            <property name="text">
+             <string>Envoyer</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageCalendrier">
+       <layout class="QVBoxLayout" name="layoutCalendrier">
+        <item>
+         <layout class="QHBoxLayout" name="headerCalendrier">
+          <item>
+           <widget class="QPushButton" name="btnRetourCalendrier">
+            <property name="text">
+             <string>◀ Retour</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTitleCalendrier">
+            <property name="text">
+             <string>📅 Calendrier des Missions</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="spacerCalendrier">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QCalendarWidget" name="calendarMissions">
+          <property name="gridVisible">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageMail">
+       <layout class="QVBoxLayout" name="layoutMail">
+        <item>
+         <layout class="QHBoxLayout" name="headerMail">
+          <item>
+           <widget class="QPushButton" name="btnRetourMail">
+            <property name="text">
+             <string>◀ Retour</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTitleMail">
+            <property name="text">
+             <string>📧 Envoi de Mail Automatique</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="spacerMail">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBoxMailForm">
+          <property name="title">
+           <string>Nouveau Message</string>
+          </property>
+          <layout class="QVBoxLayout" name="layoutMailForm">
+           <item>
+            <widget class="QLineEdit" name="mailDestinataire">
+             <property name="placeholderText">
+              <string>Destinataire (ex: employe@ourlabib.tn)</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="mailObjet">
+             <property name="placeholderText">
+              <string>Objet du message</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QTextEdit" name="mailCorps">
+             <property name="placeholderText">
+              <string>Écrivez votre message ici...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btnEnvoyerMail">
+             <property name="text">
+              <string>🚀 Envoyer le Mail</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageSMS">
+       <layout class="QVBoxLayout" name="layoutSMS">
+        <item>
+         <layout class="QHBoxLayout" name="headerSMS">
+          <item>
+           <widget class="QPushButton" name="btnRetourSMS">
+            <property name="text">
+             <string>◀ Retour</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTitleSMS">
+            <property name="text">
+             <string>📱 Envoi de SMS aux Équipes</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="spacerSMS">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBoxSMSForm">
+          <property name="title">
+           <string>Nouveau SMS</string>
+          </property>
+          <layout class="QVBoxLayout" name="layoutSMSForm">
+           <item>
+            <widget class="QLineEdit" name="smsNumero">
+             <property name="placeholderText">
+              <string>Numéro de téléphone (ex: +216 22 123 456)</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QTextEdit" name="smsCorps">
+             <property name="placeholderText">
+              <string>Écrivez votre message SMS ici (max 160 caractères)...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btnEnvoyerSMS">
+             <property name="text">
+              <string>📤 Envoyer le SMS</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageQRCode">
+       <layout class="QVBoxLayout" name="layoutQRCode">
+        <item>
+         <layout class="QHBoxLayout" name="headerQRCode">
+          <item>
+           <widget class="QPushButton" name="btnRetourQRCode">
+            <property name="text">
+             <string>◀ Retour</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTitleQRCode">
+            <property name="text">
+             <string>🔍 Interface QR Code Poubelles</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="spacerQRCode">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QFrame" name="frameQRCodePlaceholder">
+          <property name="styleSheet">
+           <string notr="true">background-color: rgba(46, 204, 113, 0.1); border: 2px dashed #2ECC71; border-radius: 10px;</string>
+          </property>
+          <layout class="QVBoxLayout" name="layoutQRCodePlaceholder">
+           <item>
+            <widget class="QLabel" name="labelQRCodeText">
+             <property name="text">
+              <string>Scanner ou Générer un QR Code pour la Poubelle</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageStatsEmployes">
+       <layout class="QVBoxLayout" name="layoutStatsEmployes">
+        <item>
+         <layout class="QHBoxLayout" name="headerStatsEmploye">
+          <item>
+           <widget class="QPushButton" name="btnRetourStatsEmploye">
+            <property name="text">
+             <string>◀ Retour</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTitleStatsEmploye">
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>📈 Statistiques des Employés</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="spacerStatsEmploye">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QFrame" name="frameStatsPlaceholder">
+          <property name="styleSheet">
+           <string notr="true">background-color: white; border-radius: 10px; border: 1px solid #ddd;</string>
+          </property>
+          <layout class="QVBoxLayout" name="layoutStatsContent">
+           <item>
+            <widget class="QLabel" name="labelStatsMsg">
+             <property name="text">
+              <string>Visualisation des statistiques de présence et performance...</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageExportEmployes">
+       <layout class="QVBoxLayout" name="layoutExportEmployes">
+        <item>
+         <layout class="QHBoxLayout" name="headerExportEmploye">
+          <item>
+           <widget class="QPushButton" name="btnRetourExportEmploye">
+            <property name="text">
+             <string>◀ Retour</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTitleExportEmploye">
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>📊 Exportation des Données</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="spacerExportEmploye">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QFrame" name="frameExportPlaceholder">
+          <property name="styleSheet">
+           <string notr="true">background-color: white; border-radius: 10px; border: 1px solid #ddd;</string>
+          </property>
+          <layout class="QVBoxLayout" name="layoutExportContent">
+           <item>
+            <widget class="QLabel" name="labelExportMsg">
+             <property name="text">
+              <string>Sélectionnez le format d'exportation (PDF, Excel, CSV)...</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageTrierEmployes">
+       <layout class="QVBoxLayout" name="layoutTrierEmployes">
+        <item>
+         <layout class="QHBoxLayout" name="headerTrierEmploye">
+          <item>
+           <widget class="QPushButton" name="btnRetourTrierEmploye">
+            <property name="text">
+             <string>◀ Retour</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTitleTrierEmploye">
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>📊 Tri des Employés</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="spacerTrierEmploye">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QFrame" name="frameTrierPlaceholder">
+          <property name="styleSheet">
+           <string notr="true">background-color: white; border-radius: 10px; border: 1px solid #ddd;</string>
+          </property>
+          <layout class="QVBoxLayout" name="layoutTrierContent">
+           <item>
+            <widget class="QLabel" name="labelTrierMsg">
+             <property name="text">
+              <string>Options de tri avancé (par nom, salaire, heures, etc.)...</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageStatsMissions">
+       <layout class="QVBoxLayout" name="layoutStatsMissions">
+        <item>
+         <layout class="QHBoxLayout" name="headerStatsMission">
+          <item>
+           <widget class="QPushButton" name="btnRetourStatsMission">
+            <property name="text">
+             <string>◀ Retour</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTitleStatsMission">
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>📈 Statistiques des Missions</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="spacerStatsMission">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QFrame" name="frameStatsMissionPlaceholder">
+          <property name="styleSheet">
+           <string notr="true">background-color: white; border-radius: 10px; border: 1px solid #ddd;</string>
+          </property>
+          <layout class="QVBoxLayout" name="layoutStatsMissionContent">
+           <item>
+            <widget class="QLabel" name="labelStatsMissionMsg">
+             <property name="text">
+              <string>Analyse des performances et taux de réussite des missions...</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageExportMissions">
+       <layout class="QVBoxLayout" name="layoutExportMissions">
+        <item>
+         <layout class="QHBoxLayout" name="headerExportMission">
+          <item>
+           <widget class="QPushButton" name="btnRetourExportMission">
+            <property name="text">
+             <string>◀ Retour</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTitleExportMission">
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>📊 Exportation des Missions</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="spacerExportMission">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QFrame" name="frameExportMissionPlaceholder">
+          <property name="styleSheet">
+           <string notr="true">background-color: white; border-radius: 10px; border: 1px solid #ddd;</string>
+          </property>
+          <layout class="QVBoxLayout" name="layoutExportMissionContent">
+           <item>
+            <widget class="QLabel" name="labelExportMissionMsg">
+             <property name="text">
+              <string>Génération de rapports de missions (PDF, Excel)...</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageTrierMissions">
+       <layout class="QVBoxLayout" name="layoutTrierMissions">
+        <item>
+         <layout class="QHBoxLayout" name="headerTrierMission">
+          <item>
+           <widget class="QPushButton" name="btnRetourTrierMission">
+            <property name="text">
+             <string>◀ Retour</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTitleTrierMission">
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>📊 Tri des Missions</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="spacerTrierMission">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QFrame" name="frameTrierMissionPlaceholder">
+          <property name="styleSheet">
+           <string notr="true">background-color: white; border-radius: 10px; border: 1px solid #ddd;</string>
+          </property>
+          <layout class="QVBoxLayout" name="layoutTrierMissionContent">
+           <item>
+            <widget class="QLabel" name="labelTrierMissionMsg">
+             <property name="text">
+              <string>Options de tri avancé pour les missions...</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageStatsEquipes">
+       <layout class="QVBoxLayout" name="layoutStatsEquipes">
+        <item>
+         <layout class="QHBoxLayout" name="headerStatsEquipe">
+          <item>
+           <widget class="QPushButton" name="btnRetourStatsEquipe">
+            <property name="text">
+             <string>◀ Retour</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTitleStatsEquipe">
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>📈 Statistiques des Équipes</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="spacerStatsEquipe">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QFrame" name="frameStatsEquipePlaceholder">
+          <property name="styleSheet">
+           <string notr="true">background-color: white; border-radius: 10px; border: 1px solid #ddd;</string>
+          </property>
+          <layout class="QVBoxLayout" name="layoutStatsEquipeContent">
+           <item>
+            <widget class="QLabel" name="labelStatsEquipeMsg">
+             <property name="text">
+              <string>Analyse de la performance des équipes...</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageExportEquipes">
+       <layout class="QVBoxLayout" name="layoutExportEquipes">
+        <item>
+         <layout class="QHBoxLayout" name="headerExportEquipe">
+          <item>
+           <widget class="QPushButton" name="btnRetourExportEquipe">
+            <property name="text">
+             <string>◀ Retour</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTitleExportEquipe">
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>📊 Exportation des Équipes</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="spacerExportEquipe">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QFrame" name="frameExportEquipePlaceholder">
+          <property name="styleSheet">
+           <string notr="true">background-color: white; border-radius: 10px; border: 1px solid #ddd;</string>
+          </property>
+          <layout class="QVBoxLayout" name="layoutExportEquipeContent">
+           <item>
+            <widget class="QLabel" name="labelExportEquipeMsg">
+             <property name="text">
+              <string>Exportation de la liste des équipes...</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageTrierEquipes">
+       <layout class="QVBoxLayout" name="layoutTrierEquipes">
+        <item>
+         <layout class="QHBoxLayout" name="headerTrierEquipe">
+          <item>
+           <widget class="QPushButton" name="btnRetourTrierEquipe">
+            <property name="text">
+             <string>◀ Retour</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTitleTrierEquipe">
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>📊 Tri des Équipes</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="spacerTrierEquipe">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QFrame" name="frameTrierEquipePlaceholder">
+          <property name="styleSheet">
+           <string notr="true">background-color: white; border-radius: 10px; border: 1px solid #ddd;</string>
+          </property>
+          <layout class="QVBoxLayout" name="layoutTrierEquipeContent">
+           <item>
+            <widget class="QLabel" name="labelTrierEquipeMsg">
+             <property name="text">
+              <string>Options de tri pour les équipes...</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageStatsZones">
+       <layout class="QVBoxLayout" name="layoutStatsZones">
+        <item>
+         <layout class="QHBoxLayout" name="headerStatsZone">
+          <item>
+           <widget class="QPushButton" name="btnRetourStatsZone">
+            <property name="text">
+             <string>◀ Retour</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTitleStatsZone">
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>📈 Statistiques des Zones</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="spacerStatsZone">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QFrame" name="frameStatsZonePlaceholder">
+          <property name="styleSheet">
+           <string notr="true">background-color: white; border-radius: 10px; border: 1px solid #ddd;</string>
+          </property>
+          <layout class="QVBoxLayout" name="layoutStatsZoneContent">
+           <item>
+            <widget class="QLabel" name="labelStatsZoneMsg">
+             <property name="text">
+              <string>Analyse de la couverture des zones...</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageExportZones">
+       <layout class="QVBoxLayout" name="layoutExportZones">
+        <item>
+         <layout class="QHBoxLayout" name="headerExportZone">
+          <item>
+           <widget class="QPushButton" name="btnRetourExportZone">
+            <property name="text">
+             <string>◀ Retour</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTitleExportZone">
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>📊 Exportation des Zones</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="spacerExportZone">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QFrame" name="frameExportZonePlaceholder">
+          <property name="styleSheet">
+           <string notr="true">background-color: white; border-radius: 10px; border: 1px solid #ddd;</string>
+          </property>
+          <layout class="QVBoxLayout" name="layoutExportZoneContent">
+           <item>
+            <widget class="QLabel" name="labelExportZoneMsg">
+             <property name="text">
+              <string>Exportation des données géographiques...</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageTrierZones">
+       <layout class="QVBoxLayout" name="layoutTrierZones">
+        <item>
+         <layout class="QHBoxLayout" name="headerTrierZone">
+          <item>
+           <widget class="QPushButton" name="btnRetourTrierZone">
+            <property name="text">
+             <string>◀ Retour</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTitleTrierZone">
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>📊 Tri des Zones</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="spacerTrierZone">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QFrame" name="frameTrierZonePlaceholder">
+          <property name="styleSheet">
+           <string notr="true">background-color: white; border-radius: 10px; border: 1px solid #ddd;</string>
+          </property>
+          <layout class="QVBoxLayout" name="layoutTrierZoneContent">
+           <item>
+            <widget class="QLabel" name="labelTrierZoneMsg">
+             <property name="text">
+              <string>Tri des zones par priorité ou secteur...</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageStatsPoubelles">
+       <layout class="QVBoxLayout" name="layoutStatsPoubelles">
+        <item>
+         <layout class="QHBoxLayout" name="headerStatsPoubelle">
+          <item>
+           <widget class="QPushButton" name="btnRetourStatsPoubelle">
+            <property name="text">
+             <string>◀ Retour</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTitleStatsPoubelle">
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>📈 Statistiques des Poubelles</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="spacerStatsPoubelle">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QFrame" name="frameStatsPoubellePlaceholder">
+          <property name="styleSheet">
+           <string notr="true">background-color: white; border-radius: 10px; border: 1px solid #ddd;</string>
+          </property>
+          <layout class="QVBoxLayout" name="layoutStatsPoubelleContent">
+           <item>
+            <widget class="QLabel" name="labelStatsPoubelleMsg">
+             <property name="text">
+              <string>Analyse du remplissage et de la collecte...</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageExportPoubelles">
+       <layout class="QVBoxLayout" name="layoutExportPoubelles">
+        <item>
+         <layout class="QHBoxLayout" name="headerExportPoubelle">
+          <item>
+           <widget class="QPushButton" name="btnRetourExportPoubelle">
+            <property name="text">
+             <string>◀ Retour</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTitleExportPoubelle">
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>📊 Exportation des Poubelles</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="spacerExportPoubelle">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QFrame" name="frameExportPoubellePlaceholder">
+          <property name="styleSheet">
+           <string notr="true">background-color: white; border-radius: 10px; border: 1px solid #ddd;</string>
+          </property>
+          <layout class="QVBoxLayout" name="layoutExportPoubelleContent">
+           <item>
+            <widget class="QLabel" name="labelExportPoubelleMsg">
+             <property name="text">
+              <string>Inventaire des poubelles (PDF, CSV)...</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageTrierPoubelles">
+       <layout class="QVBoxLayout" name="layoutTrierPoubelles">
+        <item>
+         <layout class="QHBoxLayout" name="headerTrierPoubelle">
+          <item>
+           <widget class="QPushButton" name="btnRetourTrierPoubelle">
+            <property name="text">
+             <string>◀ Retour</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTitleTrierPoubelle">
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>📊 Tri des Poubelles</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="spacerTrierPoubelle">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QFrame" name="frameTrierPoubellePlaceholder">
+          <property name="styleSheet">
+           <string notr="true">background-color: white; border-radius: 10px; border: 1px solid #ddd;</string>
+          </property>
+          <layout class="QVBoxLayout" name="layoutTrierPoubelleContent">
+           <item>
+            <widget class="QLabel" name="labelTrierPoubelleMsg">
+             <property name="text">
+              <string>Tri des poubelles par type ou état...</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1000</width>
+     <height>26</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
