@@ -931,7 +931,8 @@ bool ourlabib::SaisieZones()
 }
 void ourlabib::on_enregistrerzone_clicked()
 {
-
+    if (!SaisieZones())
+        return;
     int id  = ui->idzone->text().toInt();
     QString nom= ui->nomzone->text();
     QString local= ui->localisationzone->text();
