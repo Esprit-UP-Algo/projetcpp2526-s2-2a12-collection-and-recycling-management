@@ -142,11 +142,10 @@ private slots:
     void on_modifEQ_clicked();
     void on_anulEQ_clicked();
     void on_tableViewEQ_clicked(const QModelIndex &index);
-
     void on_refreshEQ_clicked();
-
-
+    bool saisieEquipe();
     void on_rechercheEQ_clicked();
+
     //CrudZones
     void on_enregistrerzone_clicked();
     void on_tableViewZones_activated(const QModelIndex &index);
@@ -156,7 +155,7 @@ private slots:
     void on_supzone_clicked();
     void on_annlzone_clicked();
     void on_rechzone_clicked();
-
+    bool SaisieZones();
 
 private:
     Ui::ourlabib *ui;

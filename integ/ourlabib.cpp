@@ -20,7 +20,6 @@
 #include <QTextCharFormat>
 
 #include <QSqlQuery>
-#include <QMessageBox>
 #include <QList>
 #include <QStringList>
 #include <QColor>
@@ -34,6 +33,11 @@
 #include <QtCharts/QValueAxis>
 #include <QtCharts/QLegend>
 #include <QTimer>
+#include <QIntValidator>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
+#include <QDoubleValidator>
+
 
 
 ourlabib::ourlabib(QWidget *parent)
@@ -41,6 +45,40 @@ ourlabib::ourlabib(QWidget *parent)
     , ui(new Ui::ourlabib)
 {
     ui->setupUi(this);
+    //saisie Equipe
+    QIntValidator *idValidator = new QIntValidator(1, 99999999, this);
+    ui->idEQ->setValidator(idValidator);
+    QIntValidator *membresValidator = new QIntValidator(1, 100, this);
+    ui->nbMembresEQ->setValidator(membresValidator);
+    ui->nomEQ->setMaxLength(30);
+    ui->zoneCEQ->setMaxLength(50);
+    ui->chefEQ->setMaxLength(30);
+    QRegularExpression regex("^[A-Za-zÀ-ÿ\\s'-]+$");
+    QRegularExpressionValidator *textValidator = new QRegularExpressionValidator(regex, this);
+    ui->nomEQ->setValidator(textValidator);
+    ui->chefEQ->setValidator(textValidator);
+    //ui->zoneCEQ->setValidator(textValidator);
+
+    //saisie Zones
+    QIntValidator *idValidatorzone= new QIntValidator(1, 99999999, this);
+    ui->idzone->setValidator(idValidatorzone);
+    /*
+    QRegularExpression regexTexte("^[A-Za-zÀ-ÿ\\s'-]+$");
+    QRegularExpressionValidator *textValidatorZone= new QRegularExpressionValidator(regexTexte, this);
+    ui->nomzone->setValidator(textValidator);
+    ui->localisationzone->setValidator(textValidator);*/
+
+    ui->nomzone->setMaxLength(40);
+    ui->localisationzone->setMaxLength(100);
+
+    QIntValidator *popValidator = new QIntValidator(0, 2000000000, this);
+    ui->population->setValidator(popValidator);
+
+
+
+    QIntValidator *nbValidator = new QIntValidator(0, 99999, this);
+    ui->nbpoubelle->setValidator(nbValidator);
+
     // Commencer par la page de login
     ui->stackedWidget->setCurrentIndex(0);
     QTimer::singleShot(100, this, [this]() {
@@ -529,9 +567,39 @@ void ourlabib::on_btnTrierMission_clicked() {
     ui->stackedWidget->setCurrentIndex(18);
 }
 /*****************************Crud Gestion Equipe****************************/
-
+bool ourlabib::saisieEquipe()
+{
+    if(ui->idEQ->text().isEmpty() || ui->idEQ->text().toInt()<= 0)
+    {
+        QMessageBox::warning(this, "Erreur", "L'ID doit être un nombre supérieur à 0");
+        return false;
+    }
+    if(ui->nomEQ->text().isEmpty())
+    {
+        QMessageBox::warning(this, "Erreur", "Le nom est obligatoire");
+        return false;
+    }
+    if(ui->zoneCEQ->text().isEmpty())
+    {
+        QMessageBox::warning(this, "Erreur", "La zone couverte est obligatoire");
+        return false;
+    }
+    if(ui->chefEQ->text().isEmpty())
+    {
+        QMessageBox::warning(this, "Erreur", "le chef d'équipe est obligatoire");
+        return false;
+    }
+    if(ui->nbMembresEQ->text().isEmpty() || ui->nbMembresEQ->text().toInt()<= 0)
+    {
+        QMessageBox::warning(this, "Erreur", "Le nombre d'équipes doit être un nombre supérieur à 0");
+        return false;
+    }
+    return true;
+}
 void ourlabib::on_enrgstEQ_clicked()
 {
+    if (!saisieEquipe())
+        return;
     int id_Eqpe=ui->idEQ->text().toInt();
     QString nom=ui->nomEQ->text();
     QString zone=ui->zoneCEQ->text();
@@ -756,7 +824,7 @@ void ourlabib::on_exportEQ_clicked()
         QVariant headerData = model->headerData(col, Qt::Horizontal, Qt::DisplayRole);
         QString text = headerData.toString();
         QTextCursor cellCursor = table->cellAt(0, col).firstCursorPosition();
-        cellCursor.insertText(text, QTextCharFormat()); // tu peux styliser si besoin
+        cellCursor.insertText(text, QTextCharFormat());
     }
     for (int row = 0; row < rows; row++) {
         for (int col = 0; col < cols; col++) {
@@ -826,6 +894,41 @@ void ourlabib::on_statEQ_clicked()
     window->show();
 }
 //*******************CRUD ZONES*******************
+
+bool ourlabib::SaisieZones()
+{
+    if(ui->idzone->text().isEmpty() || ui->idzone->text().toInt()<= 0)
+    {
+        QMessageBox::warning(this, "Erreur", "L'ID doit être un nombre supérieur à 0");
+        return false;
+    }
+    if(ui->nbpoubelle->text().isEmpty() || ui->nbpoubelle->text().toInt()<= 0)
+    {
+        QMessageBox::warning(this, "Erreur", "Le nombre du poubelle doit être un nombre supérieur à 0");
+        return false;
+    }
+    if(ui->nomzone->text().isEmpty())
+    {
+        QMessageBox::warning(this, "Erreur", "Le nom de la zone est obligatoire");
+        return false;
+    }
+    if(ui->localisationzone->text().isEmpty())
+    {
+        QMessageBox::warning(this, "Erreur", "La localisation de la zone est obligatoire");
+        return false;
+    }
+    if(ui->population->text().isEmpty() || ui->population->text().toInt()<= 0)
+    {
+        QMessageBox::warning(this, "Erreur", "La population doit être un nombre supérieur à 0");
+        return false;
+    }
+    if(ui->superfice->text().isEmpty())
+    {
+        QMessageBox::warning(this, "Erreur", "La superfice  est obligatoire");
+        return false;
+    }
+    return true;
+}
 void ourlabib::on_enregistrerzone_clicked()
 {
 
