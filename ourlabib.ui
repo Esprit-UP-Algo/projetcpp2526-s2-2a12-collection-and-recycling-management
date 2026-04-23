@@ -45,7 +45,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>4</number>
+       <number>5</number>
       </property>
       <widget class="QWidget" name="pageLogin">
        <property name="styleSheet">
@@ -1363,8 +1363,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QComboBox" name="zoneCEQ">
-                </widget>
+                <widget class="QComboBox" name="zoneCEQ"/>
                </item>
               </layout>
              </item>
@@ -1389,8 +1388,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QComboBox" name="chefEQ">
-                </widget>
+                <widget class="QComboBox" name="chefEQ"/>
                </item>
               </layout>
              </item>
@@ -1415,8 +1413,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QSpinBox" name="nbMembresEQ">
-                </widget>
+                <widget class="QSpinBox" name="nbMembresEQ"/>
                </item>
               </layout>
              </item>

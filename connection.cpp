@@ -17,9 +17,9 @@ Connection *Connection::instance() {
 
 bool Connection::createConnect() {
     bool test = false;
-    db.setDatabaseName("Source_Projet");
-    db.setUserName("SAFWCARM");
-    db.setPassword("projet");
+    db.setDatabaseName("Ourlabib");
+    db.setUserName("System");
+    db.setPassword("123");
 
     if (db.open()) {
         test = true;

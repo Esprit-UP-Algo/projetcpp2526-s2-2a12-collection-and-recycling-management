@@ -96,7 +96,6 @@ void ourlabib::on_pushButton_login_clicked() {
     }
 
     if (loginUser(username, password)) {
-        QMessageBox::information(this, "Succes", "Connexion reussie!");
         ui->lineEdit_username->clear();
         ui->lineEdit_password->clear();
         ui->checkBox->setChecked(false);

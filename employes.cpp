@@ -20,7 +20,7 @@ bool Employe::ajouter() {
         return false;
     }
 
-    QSqlQuery query(c->getDatabase());
+    QSqlQuery query(Connection::instance()->getDatabase());
 
     query.prepare("INSERT INTO EMPLOYE "
                   "(NOM, EMAIL, POSTE, DISPONIBILITE, HEURES_TRAVAIL, SALAIRE, SEXE, ID_EQUIPE) "
@@ -160,7 +160,7 @@ QSqlQueryModel* Employe::rechercher(const QString &valeur, const QString &criter
                   "FROM EMPLOYE e "
                   "LEFT JOIN EQUIPE eq ON e.ID_EQUIPE = eq.ID_EQUIPE "
                   "WHERE " + condition + " "
-                  "ORDER BY e.ID_EMPLOYE");
+                                "ORDER BY e.ID_EMPLOYE");
     query.bindValue(":val", "%" + valeur + "%");
 
     if (!query.exec()) {

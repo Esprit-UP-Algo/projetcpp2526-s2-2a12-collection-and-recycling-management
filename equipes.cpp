@@ -1,4 +1,5 @@
 #include "equipes.h"
+#include "connection.h"
 #include <QDebug>
 #include <QSqlQuery>
 #include <QSqlError>
@@ -19,7 +20,8 @@ Gestion_equipe::Gestion_equipe(int id,QString nom,QString zone,QString chef,int 
 
 bool Gestion_equipe::ajouter()
 {
-    QSqlQuery query;
+    Connection *c = Connection::instance();
+    QSqlQuery query(c->getDatabase());
     query.prepare("INSERT INTO EQUIPE (NOM_EQUIPE, ID_ZONE, CHEF_EQUIPE, NOMBRE_MEMBRES, STATUT) "
                   "VALUES (:nomEquipe, :zoneEquipe, :chefEquipe, :nbEquipe, :statutEquipe)");
 
@@ -44,12 +46,10 @@ bool Gestion_equipe::ajouter()
 
 QSqlQueryModel* Gestion_equipe::afficher()
 {
-    if (!QSqlDatabase::database().isOpen()) {
-        qDebug() << "Database not open!";
-        return nullptr;
-    }
+    Connection *c = Connection::instance();
     QSqlQueryModel* model = new QSqlQueryModel();
-    model->setQuery("SELECT ID_EQUIPE, NOM_EQUIPE, ID_ZONE, CHEF_EQUIPE, NOMBRE_MEMBRES, STATUT FROM EQUIPE ORDER BY ID_EQUIPE");
+    model->setQuery("SELECT ID_EQUIPE, NOM_EQUIPE, ID_ZONE, CHEF_EQUIPE, NOMBRE_MEMBRES, STATUT FROM EQUIPE ORDER BY ID_EQUIPE",
+                    c->getDatabase());
 
     model->setHeaderData(0, Qt::Horizontal, QObject::tr("ID Equipe"));
     model->setHeaderData(1, Qt::Horizontal, QObject::tr("Nom Equipe"));
@@ -57,12 +57,17 @@ QSqlQueryModel* Gestion_equipe::afficher()
     model->setHeaderData(3, Qt::Horizontal, QObject::tr("Chef Equipe"));
     model->setHeaderData(4, Qt::Horizontal, QObject::tr("Nb Membres"));
     model->setHeaderData(5, Qt::Horizontal, QObject::tr("Statut"));
+
+    if (model->lastError().isValid())
+        qDebug() << "[ERREUR] Gestion_equipe::afficher() :" << model->lastError().text();
+
     return model;
 }
 
 bool Gestion_equipe::supprimer(int id)
 {
-    QSqlQuery query;
+    Connection *c = Connection::instance();
+    QSqlQuery query(c->getDatabase());
     query.prepare("DELETE FROM EQUIPE WHERE ID_EQUIPE = :id");
     query.bindValue(":id", id);
 
@@ -75,7 +80,8 @@ bool Gestion_equipe::supprimer(int id)
 
 bool Gestion_equipe::modifier(int id)
 {
-    QSqlQuery query;
+    Connection *c = Connection::instance();
+    QSqlQuery query(c->getDatabase());
     query.prepare("UPDATE EQUIPE SET NOM_EQUIPE = :nom, ID_ZONE = :zone, CHEF_EQUIPE = :chef, "
                   "NOMBRE_MEMBRES = :nb, STATUT = :statut WHERE ID_EQUIPE = :id");
 
@@ -95,9 +101,11 @@ bool Gestion_equipe::modifier(int id)
 
 QSqlQueryModel* Gestion_equipe::trier()
 {
+    Connection *c = Connection::instance();
     QSqlQueryModel* model = new QSqlQueryModel();
     model->setQuery("SELECT ID_EQUIPE, NOM_EQUIPE, ID_ZONE, CHEF_EQUIPE, NOMBRE_MEMBRES, STATUT "
-                    "FROM EQUIPE ORDER BY NOMBRE_MEMBRES ASC");
+                    "FROM EQUIPE ORDER BY NOMBRE_MEMBRES ASC",
+                    c->getDatabase());
 
     if (model->lastError().isValid()) {
         qDebug() << "Erreur SQL lors du tri :" << model->lastError().text();
@@ -117,8 +125,9 @@ QSqlQueryModel* Gestion_equipe::trier()
 
 QSqlQueryModel* Gestion_equipe::rechercher(const int& idRecherche)
 {
+    Connection *c = Connection::instance();
     QSqlQueryModel* model = new QSqlQueryModel();
-    QSqlQuery query;
+    QSqlQuery query(c->getDatabase());
     query.prepare("SELECT ID_EQUIPE, NOM_EQUIPE, ID_ZONE, CHEF_EQUIPE, NOMBRE_MEMBRES, STATUT "
                   "FROM EQUIPE WHERE ID_EQUIPE = :id");
     query.bindValue(":id", idRecherche);

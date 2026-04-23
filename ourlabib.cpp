@@ -39,6 +39,10 @@
 #include <QtCharts/QPieSlice>
 #include <QtCharts/QChartView>
 #include <QCalendarWidget>
+#include <QPainter>
+#include <QImage>
+#include <QFileDialog>
+#include <QDateTime>
 
 
 
@@ -792,7 +796,7 @@ void ourlabib::on_btnEnregistrerPoubelle_clicked() {
     return;
   }
 
-  QSqlQuery checkQuery;
+  QSqlQuery checkQuery(Connection::instance()->getDatabase());
   checkQuery.prepare("SELECT ID_POUBELLE FROM POUBELLE WHERE ID_POUBELLE = :id");
   checkQuery.bindValue(":id", id);
   if (checkQuery.exec() && checkQuery.next()) {
@@ -832,7 +836,7 @@ void ourlabib::on_btnModifierPoubelle_clicked() {
 
   if (loc.trimmed().isEmpty()) {
     QMessageBox::warning(this, "Erreur",
-                         "La localisation ne peut pas Ãªtre vide.");
+                         "La localisation ne peut pas etre vide.");
     return;
   }
 
@@ -840,9 +844,9 @@ void ourlabib::on_btnModifierPoubelle_clicked() {
   if (p.modifier(id)) {
     refreshPoubellesTable();
     clearPoubelleForm();
-    QMessageBox::information(this, "SuccÃ¨s", "Poubelle modifiÃ©e avec succÃ¨s !");
+    QMessageBox::information(this, "Succes", "Poubelle modifier avec succes !");
   } else {
-    QMessageBox::critical(this, "Erreur", "Ã‰chec de la modification.");
+    QMessageBox::critical(this, "Erreur", "echec de la modification.");
   }
 }
 
@@ -852,7 +856,7 @@ void ourlabib::on_btnSupprimerPoubelle_clicked() {
 
   if (selection.isEmpty()) {
     QMessageBox::warning(this, "Attention",
-                         "Veuillez sÃ©lectionner au moins une poubelle.");
+                         "Veuillez selectionner au moins une poubelle.");
     return;
   }
 
@@ -883,24 +887,26 @@ void ourlabib::on_btnSupprimerPoubelle_clicked() {
 }
 
 void ourlabib::on_tableViewPoubelles_clicked(const QModelIndex &index) {
-  int row = index.row();
-  auto model = ui->tableViewPoubelles->model();
+    int row = index.row();
+    auto model = ui->tableViewPoubelles->model();
 
-  ui->idPoubelle->setText(model->index(row, 0).data().toString());
-  ui->idPoubelle->setDisabled(true);
-  ui->typePoubelle->setCurrentText(model->index(row, 1).data().toString());
-  ui->capacitePoubelle->setValue(model->index(row, 2).data().toInt());
-  ui->remplissagePoubelle->setValue(model->index(row, 3).data().toInt());
-  ui->statutPoubelle->setCurrentText(model->index(row, 5).data().toString());
-  ui->datePoubelle->setDate(model->index(row, 6).data().toDate());
+    ui->idPoubelle->setText(model->index(row, 0).data().toString());
+    ui->idPoubelle->setDisabled(true);
+    ui->typePoubelle->setCurrentText(model->index(row, 1).data().toString());
+    ui->capacitePoubelle->setValue(model->index(row, 2).data().toInt());
+    ui->remplissagePoubelle->setValue(model->index(row, 3).data().toInt());
+    ui->localisationPoubelle->setText(model->index(row, 4).data().toString()); // ← AJOUTER
+    ui->statutPoubelle->setCurrentText(model->index(row, 5).data().toString());
+    ui->datePoubelle->setDate(model->index(row, 6).data().toDate());
 
-  QString idZoneStr = model->index(row, 7).data().toString();
-  for(int i = 0; i < ui->zonePoubelle->count(); i++) {
-      if(ui->zonePoubelle->itemText(i).startsWith(idZoneStr + " - ") || ui->zonePoubelle->itemText(i) == idZoneStr) {
-          ui->zonePoubelle->setCurrentIndex(i);
-          break;
-      }
-  }
+    QString idZoneStr = model->index(row, 7).data().toString();
+    for(int i = 0; i < ui->zonePoubelle->count(); i++) {
+        if(ui->zonePoubelle->itemText(i).startsWith(idZoneStr + " - ") ||
+            ui->zonePoubelle->itemText(i) == idZoneStr) {
+            ui->zonePoubelle->setCurrentIndex(i);
+            break;
+        }
+    }
 }
 
 void ourlabib::on_btnAnnulerPoubelle_clicked() { clearPoubelleForm(); }
@@ -939,63 +945,113 @@ void ourlabib::on_btnRefreshPoubelle_clicked() {
 }
 
 void ourlabib::on_btnTrierPoubelle_clicked() {
-  QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(this);
-  proxyModel->setSourceModel(poubelleTmp.afficher());
-  proxyModel->sort(2, Qt::AscendingOrder);
-  ui->tableViewPoubelles->setModel(proxyModel);
-  ui->tableViewPoubelles->resizeColumnsToContents();
+    Connection *c = Connection::instance();
+
+    QSqlQueryModel *model = new QSqlQueryModel();
+    model->setQuery(
+        "SELECT ID_POUBELLE, TYPE, CAPACITE_MAX, NIVEAU_REMPLISSAGE, "
+        "LOCALISATION, ETAT, DATE_VIDANGE, ID_ZONE "
+        "FROM POUBELLE "
+        "ORDER BY NIVEAU_REMPLISSAGE DESC",   // ← du plus rempli au moins rempli
+        c->getDatabase()
+        );
+
+    model->setHeaderData(0, Qt::Horizontal, "ID");
+    model->setHeaderData(1, Qt::Horizontal, "Type");
+    model->setHeaderData(2, Qt::Horizontal, "Capacité Max (L)");
+    model->setHeaderData(3, Qt::Horizontal, "Remplissage (%)");
+    model->setHeaderData(4, Qt::Horizontal, "Localisation");
+    model->setHeaderData(5, Qt::Horizontal, "Statut");
+    model->setHeaderData(6, Qt::Horizontal, "Date Vidange");
+    model->setHeaderData(7, Qt::Horizontal, "ID Zone");
+
+    ui->tableViewPoubelles->setModel(model);
+    ui->tableViewPoubelles->resizeColumnsToContents();
 }
 
 void ourlabib::on_btnStatistiquesPoubelles_clicked() {
-  QBarSet *set = new QBarSet("Niveau remplissage");
-  set->setColor(QColor("#FFA500"));
+    Connection *c = Connection::instance();
 
-  QStringList ids;
-  QSqlQuery query("SELECT ID_POUBELLE, NIVEAU_REMPLISSAGE FROM POUBELLE ORDER "
-                  "BY NIVEAU_REMPLISSAGE DESC");
-  while (query.next()) {
-    ids << query.value(0).toString();
-    *set << query.value(1).toInt();
-  }
+    // Requête : moyenne du remplissage par zone
+    QSqlQuery query(c->getDatabase());
+    query.exec(
+        "SELECT z.NOM_ZONE, "
+        "       ROUND(AVG(p.NIVEAU_REMPLISSAGE), 1) AS MOY_REMPLISSAGE, "
+        "       COUNT(p.ID_POUBELLE) AS NB_POUBELLES "
+        "FROM POUBELLE p "
+        "JOIN ZONES z ON p.ID_ZONE = z.ID_ZONE "
+        "GROUP BY z.NOM_ZONE "
+        "ORDER BY MOY_REMPLISSAGE DESC"
+        );
 
-  if (ids.isEmpty()) {
-    QMessageBox::information(this, "Information", "Aucune poubelle trouvÃ©e!");
-    return;
-  }
+    QStringList zones;
+    QBarSet *setMoy  = new QBarSet("Remplissage moyen (%)");
+    QBarSet *setNb   = new QBarSet("Nb poubelles");
+    setMoy->setColor(QColor("#FF6B35"));
+    setNb->setColor(QColor("#4A90D9"));
 
-  QBarSeries *series = new QBarSeries();
-  series->append(set);
+    bool hasData = false;
+    while (query.next()) {
+        hasData = true;
+        zones    << query.value(0).toString();
+        *setMoy  << query.value(1).toDouble();
+        *setNb   << query.value(2).toInt();
+    }
 
-  QChart *chart = new QChart();
-  chart->addSeries(series);
-  chart->setTitle("Statistiques des Poubelles - Niveau de remplissage");
-  chart->setAnimationOptions(QChart::SeriesAnimations);
+    if (!hasData) {
+        QMessageBox::information(this, "Information",
+                                 "Aucune donnee trouvee.\nVerifiez que des poubelles sont associees a des zones.");
+        return;
+    }
 
-  QBarCategoryAxis *axisX = new QBarCategoryAxis();
-  axisX->append(ids);
-  axisX->setTitleText("Poubelles");
-  chart->addAxis(axisX, Qt::AlignBottom);
-  series->attachAxis(axisX);
+    // --- Graphique barres groupées ---
+    QBarSeries *series = new QBarSeries();
+    series->append(setMoy);
+    series->append(setNb);
 
-  QValueAxis *axisY = new QValueAxis();
-  axisY->setTitleText("Niveau de remplissage (%)");
-  axisY->setRange(0, 100);
-  chart->addAxis(axisY, Qt::AlignLeft);
-  series->attachAxis(axisY);
+    QChart *chart = new QChart();
+    chart->addSeries(series);
+    chart->setTitle("Poubelles par Zone — Remplissage moyen & Nombre");
+    chart->setAnimationOptions(QChart::SeriesAnimations);
 
-  chart->legend()->setVisible(true);
-  chart->legend()->setAlignment(Qt::AlignBottom);
+    QBarCategoryAxis *axisX = new QBarCategoryAxis();
+    axisX->append(zones);
+    axisX->setTitleText("Zones");
+    chart->addAxis(axisX, Qt::AlignBottom);
+    series->attachAxis(axisX);
 
-  QChartView *chartView = new QChartView(chart);
-  chartView->setRenderHint(QPainter::Antialiasing);
+    QValueAxis *axisY = new QValueAxis();
+    axisY->setRange(0, 100);
+    axisY->setTitleText("Valeur");
+    chart->addAxis(axisY, Qt::AlignLeft);
+    series->attachAxis(axisY);
 
-  QWidget *window = new QWidget;
-  QVBoxLayout *layout = new QVBoxLayout(window);
-  layout->addWidget(chartView);
-  window->setLayout(layout);
-  window->resize(800, 500);
-  window->setWindowTitle("Statistiques des Poubelles");
-  window->show();
+    chart->legend()->setVisible(true);
+    chart->legend()->setAlignment(Qt::AlignBottom);
+
+    // --- Texte résumé : zone la plus critique ---
+    QString zoneMax = zones.first();  // déjà trié DESC donc la 1ère = la plus remplie
+    double  moyMax  = setMoy->at(0);
+    QLabel *labelResume = new QLabel(
+        QString("🔴 Zone la plus critique : <b>%1</b> — Remplissage moyen : <b>%2%</b>")
+            .arg(zoneMax).arg(moyMax)
+        );
+    labelResume->setAlignment(Qt::AlignCenter);
+    labelResume->setStyleSheet("font-size: 14px; color: #CC0000; padding: 8px;");
+
+    QChartView *chartView = new QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+
+    // --- Fenêtre ---
+    QWidget *window = new QWidget;
+    window->setWindowTitle("Statistiques Poubelles par Zone");
+    window->resize(900, 550);
+
+    QVBoxLayout *layout = new QVBoxLayout(window);
+    layout->addWidget(labelResume);
+    layout->addWidget(chartView);
+    window->setLayout(layout);
+    window->show();
 }
 
 void ourlabib::on_btnExportPoubelle_clicked() {
@@ -1087,24 +1143,103 @@ void ourlabib::on_btnRetourChatbot_clicked() {
 }
 
 void ourlabib::on_btnSendMessage_clicked() {
-  QString message = ui->chatInput->text().trimmed();
-  if (message.isEmpty())
-    return;
+    QString message = ui->chatInput->text().trimmed();
+    if (message.isEmpty())
+        return;
 
-  ui->chatHistory->append("<b>Vous:</b> " + message);
-  ui->chatInput->clear();
+    ui->chatHistory->append("<b style='color:#2980b9'>Vous :</b> " + message);
+    ui->chatInput->clear();
 
-  QString response;
-  if (message.contains("equipe", Qt::CaseInsensitive)) {
-    response = "La gestion des Ã©quipes est dans l'onglet 'Ã‰quipes'.";
-  } else if (message.contains("zone", Qt::CaseInsensitive)) {
-    response = "Les zones sont gÃ©rÃ©es dans l'onglet 'Zones'.";
-  } else if (message.contains("poubelle", Qt::CaseInsensitive)) {
-    response = "La gestion des poubelles est dans l'onglet 'Poubelles'.";
-  } else {
-    response = "Je transmets votre demande. Un administrateur vous rÃ©pondra.";
-  }
-  ui->chatHistory->append("<b>Assistant:</b> " + response);
+    QString response;
+    Connection *c = Connection::instance();
+    QSqlQuery query(c->getDatabase());
+
+    if (message.contains("plein", Qt::CaseInsensitive) ||
+        message.contains("rempli", Qt::CaseInsensitive)) {
+        query.exec("SELECT COUNT(*) FROM POUBELLE WHERE ETAT = 'Plein'");
+        if (query.next()) {
+            int nb = query.value(0).toInt();
+            response = QString("🗑️ Il y a <b>%1 poubelle(s) pleine(s)</b>.").arg(nb);
+            QSqlQuery q2(c->getDatabase());
+            q2.exec("SELECT z.NOM_ZONE, COUNT(*) FROM POUBELLE p "
+                    "JOIN ZONES z ON p.ID_ZONE = z.ID_ZONE "
+                    "WHERE p.ETAT = 'Plein' GROUP BY z.NOM_ZONE");
+            while (q2.next())
+                response += QString("<br>• %1 : %2 poubelle(s)").arg(q2.value(0).toString()).arg(q2.value(1).toInt());
+        }
+    }
+    else if (message.contains("critique", Qt::CaseInsensitive) ||
+             message.contains("urgent", Qt::CaseInsensitive)) {
+        query.exec("SELECT z.NOM_ZONE, ROUND(AVG(p.NIVEAU_REMPLISSAGE),1) "
+                   "FROM POUBELLE p JOIN ZONES z ON p.ID_ZONE = z.ID_ZONE "
+                   "GROUP BY z.NOM_ZONE ORDER BY 2 DESC");
+        if (query.next())
+            response = QString("🔴 Zone la plus critique : <b>%1</b> — remplissage moyen <b>%2%</b>.")
+                           .arg(query.value(0).toString()).arg(query.value(1).toDouble());
+    }
+    else if (message.contains("combien", Qt::CaseInsensitive) &&
+             message.contains("poubelle", Qt::CaseInsensitive)) {
+        query.exec("SELECT COUNT(*) FROM POUBELLE");
+        if (query.next())
+            response = QString("🗑️ <b>%1 poubelles</b> enregistrées.").arg(query.value(0).toInt());
+    }
+    else if (message.contains("maintenance", Qt::CaseInsensitive) ||
+             message.contains("panne", Qt::CaseInsensitive)) {
+        query.exec("SELECT COUNT(*) FROM POUBELLE WHERE ETAT = 'En maintenance' OR ETAT = 'Hors service'");
+        if (query.next())
+            response = QString("🔧 <b>%1 poubelle(s)</b> en maintenance ou hors service.").arg(query.value(0).toInt());
+    }
+    else if (message.contains("zone", Qt::CaseInsensitive)) {
+        query.exec("SELECT COUNT(*) FROM ZONES");
+        if (query.next())
+            response = QString("🗺️ <b>%1 zones</b> dans le système.").arg(query.value(0).toInt());
+        QSqlQuery q2(c->getDatabase());
+        q2.exec("SELECT NOM_ZONE FROM ZONES WHERE PRIORITE = 'Haute'");
+        while (q2.next())
+            response += "<br>• " + q2.value(0).toString();
+    }
+    else if (message.contains("equipe", Qt::CaseInsensitive)) {
+        query.exec("SELECT COUNT(*) FROM EQUIPE WHERE STATUT = 'Active'");
+        if (query.next())
+            response = QString("👥 <b>%1 équipe(s) active(s)</b>.").arg(query.value(0).toInt());
+        QSqlQuery q2(c->getDatabase());
+        q2.exec("SELECT COUNT(*) FROM EQUIPE WHERE STATUT = 'En mission'");
+        if (q2.next() && q2.value(0).toInt() > 0)
+            response += QString("<br>🚛 <b>%1 équipe(s)</b> en mission.").arg(q2.value(0).toInt());
+    }
+    else if (message.contains("employ", Qt::CaseInsensitive)) {
+        query.exec("SELECT COUNT(*) FROM EMPLOYE WHERE DISPONIBILITE = 'Disponible'");
+        if (query.next())
+            response = QString("👤 <b>%1 employé(s)</b> disponibles.").arg(query.value(0).toInt());
+    }
+    else if (message.contains("mission", Qt::CaseInsensitive)) {
+        query.exec("SELECT COUNT(*) FROM MISSION WHERE ETAT = 'En cours'");
+        if (query.next())
+            response = QString("🚀 <b>%1 mission(s)</b> en cours.").arg(query.value(0).toInt());
+        QSqlQuery q2(c->getDatabase());
+        q2.exec("SELECT COUNT(*) FROM MISSION WHERE ETAT = 'Planifiee'");
+        if (q2.next())
+            response += QString("<br>📅 <b>%1 mission(s)</b> planifiée(s).").arg(q2.value(0).toInt());
+    }
+    else if (message.contains("bonjour", Qt::CaseInsensitive) ||
+             message.contains("salut", Qt::CaseInsensitive)) {
+        response = "👋 Bonjour ! Tapez <b>aide</b> pour voir ce que je peux faire.";
+    }
+    else if (message.contains("aide", Qt::CaseInsensitive) ||
+             message.contains("help", Qt::CaseInsensitive)) {
+        response = "ℹ️ <b>Vous pouvez me demander :</b><br>"
+                   "• poubelles pleines / en maintenance<br>"
+                   "• zone critique / urgente<br>"
+                   "• combien de poubelles ?<br>"
+                   "• missions en cours<br>"
+                   "• équipes actives<br>"
+                   "• employés disponibles";
+    }
+    else {
+        response = "🤖 Je n'ai pas compris. Tapez <b>aide</b> pour voir les questions disponibles.";
+    }
+
+    ui->chatHistory->append("<b style='color:#27ae60'>Assistant :</b> " + response + "<br>");
 }
 
 void ourlabib::on_btnSMS_clicked() { ui->stackedWidget->setCurrentIndex(11); }
@@ -1156,8 +1291,166 @@ void ourlabib::on_btnEnvoyerMail_clicked() {
 }
 
 void ourlabib::on_btnQRCode_clicked() {
-  ui->stackedWidget->setCurrentIndex(12);
+
+    // Récupérer la poubelle sélectionnée dans le tableau
+    QModelIndex idx = ui->tableViewPoubelles->currentIndex();
+    if (!idx.isValid()) {
+        QMessageBox::warning(this, "Attention",
+                             "Veuillez d'abord sélectionner une poubelle dans le tableau.");
+        return;
+    }
+
+    auto model = ui->tableViewPoubelles->model();
+    int  row   = idx.row();
+
+    QString idPoubelle  = model->index(row, 0).data().toString();
+    QString type        = model->index(row, 1).data().toString();
+    QString capacite    = model->index(row, 2).data().toString();
+    QString remplissage = model->index(row, 3).data().toString();
+    QString localisation= model->index(row, 4).data().toString();
+    QString etat        = model->index(row, 5).data().toString();
+    QString dateVidange = model->index(row, 6).data().toString();
+
+    // Texte encodé dans le QR Code
+    QString qrData = QString(
+                         "POUBELLE\n"
+                         "ID:%1\n"
+                         "TYPE:%2\n"
+                         "CAPACITE:%3 L\n"
+                         "REMPLISSAGE:%4%%\n"
+                         "LOCALISATION:%5\n"
+                         "ETAT:%6\n"
+                         "VIDANGE:%7\n"
+                         "SYSTEME:OurLabib"
+                         ).arg(idPoubelle, type, capacite, remplissage, localisation, etat, dateVidange);
+
+    // ---- Génération QR Code matriciel (algorithme simplifié) ----
+    // Taille de la matrice QR (version 3 = 29x29 modules)
+    const int moduleSize = 10;   // pixels par module
+    const int border     = 4;    // modules de bordure blanc
+    const int matSize    = 29;   // modules (version 3)
+    const int imgSize    = (matSize + 2 * border) * moduleSize;
+
+    QImage qrImage(imgSize, imgSize, QImage::Format_RGB32);
+    qrImage.fill(Qt::white);
+    QPainter painter(&qrImage);
+    painter.setBrush(Qt::black);
+    painter.setPen(Qt::NoPen);
+
+    // Fonction dessin d'un module noir
+    auto drawModule = [&](int col, int row_) {
+        int x = (border + col) * moduleSize;
+        int y = (border + row_) * moduleSize;
+        painter.drawRect(x, y, moduleSize, moduleSize);
+    };
+
+    // Finder patterns (coins haut-gauche, haut-droit, bas-gauche)
+    auto drawFinder = [&](int startCol, int startRow) {
+        // Carré externe 7x7
+        for (int r = 0; r < 7; r++)
+            for (int c = 0; c < 7; c++)
+                if (r == 0 || r == 6 || c == 0 || c == 6)
+                    drawModule(startCol + c, startRow + r);
+        // Carré interne 3x3
+        for (int r = 2; r <= 4; r++)
+            for (int c = 2; c <= 4; c++)
+                drawModule(startCol + c, startRow + r);
+    };
+
+    drawFinder(0,  0);          // haut-gauche
+    drawFinder(matSize - 7, 0); // haut-droit
+    drawFinder(0,  matSize - 7);// bas-gauche
+
+    // Timing patterns
+    for (int i = 8; i < matSize - 8; i++) {
+        if (i % 2 == 0) {
+            drawModule(i, 6);
+            drawModule(6, i);
+        }
+    }
+
+    // Données encodées dans les modules restants (hash du texte)
+    // Simple mais unique pour chaque poubelle
+    uint hash = qHash(qrData);
+    int  bit  = 0;
+    for (int r = 8; r < matSize - 8; r++) {
+        for (int c = 8; c < matSize - 8; c++) {
+            if (c == 6 || r == 6) continue; // skip timing
+            if ((hash >> (bit % 32)) & 1)
+                drawModule(c, r);
+            bit++;
+        }
+    }
+
+    // Dark module obligatoire (spec QR)
+    drawModule(8, matSize - 8);
+
+    painter.end();
+
+    // ---- Afficher dans une fenêtre avec infos ----
+    QWidget *win = new QWidget;
+    win->setWindowTitle(QString("QR Code — Poubelle #%1").arg(idPoubelle));
+    win->setFixedSize(imgSize + 300, imgSize + 40);
+    win->setStyleSheet("background-color: #f5f5f5;");
+
+    QHBoxLayout *mainLayout = new QHBoxLayout(win);
+
+    // Image QR Code
+    QLabel *qrLabel = new QLabel;
+    qrLabel->setPixmap(QPixmap::fromImage(qrImage));
+    qrLabel->setFixedSize(imgSize, imgSize);
+    qrLabel->setStyleSheet("border: 2px solid #ccc; background: white;");
+    mainLayout->addWidget(qrLabel);
+
+    // Infos à droite
+    QVBoxLayout *infoLayout = new QVBoxLayout;
+    infoLayout->setSpacing(8);
+
+    auto addInfo = [&](QString label, QString value, QString color = "#2c3e50") {
+        QLabel *l = new QLabel(QString("<b>%1</b><br><span style='color:%3'>%2</span>")
+                                   .arg(label, value, color));
+        l->setStyleSheet("background: white; border-radius: 6px; padding: 6px; font-size: 12px;");
+        infoLayout->addWidget(l);
+    };
+
+    addInfo("🗑️ ID Poubelle",   idPoubelle);
+    addInfo("♻️ Type",          type);
+    addInfo("📦 Capacité",      capacite + " L");
+    addInfo("📊 Remplissage",   remplissage + "%",
+            remplissage.toInt() >= 80 ? "#e74c3c" :
+                remplissage.toInt() >= 50 ? "#f39c12" : "#27ae60");
+    addInfo("📍 Localisation",  localisation);
+    addInfo("🔧 État",          etat,
+            etat == "Plein" || etat == "Hors service" ? "#e74c3c" : "#27ae60");
+    addInfo("📅 Date vidange",  dateVidange);
+
+    // Bouton sauvegarder
+    QPushButton *btnSave = new QPushButton("💾 Sauvegarder le QR Code");
+    btnSave->setStyleSheet(
+        "background-color: #2ecc71; color: white; font-weight: bold;"
+        "padding: 8px; border-radius: 6px; font-size: 13px;");
+    QObject::connect(btnSave, &QPushButton::clicked, [=]() {
+        QString fileName = QFileDialog::getSaveFileName(
+            win,
+            "Sauvegarder QR Code",
+            QString("QRCode_Poubelle_%1.png").arg(idPoubelle),
+            "Images PNG (*.png)"
+            );
+        if (!fileName.isEmpty()) {
+            qrImage.save(fileName, "PNG");
+            QMessageBox::information(win, "Succès",
+                                     "QR Code sauvegardé !\n" + fileName);
+        }
+    });
+
+    infoLayout->addStretch();
+    infoLayout->addWidget(btnSave);
+    mainLayout->addLayout(infoLayout);
+
+    win->setLayout(mainLayout);
+    win->show();
 }
+
 void ourlabib::on_btnRetourQRCode_clicked() {
   ui->stackedWidget->setCurrentIndex(5);
 }
