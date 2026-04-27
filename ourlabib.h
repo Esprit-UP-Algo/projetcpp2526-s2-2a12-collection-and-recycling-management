@@ -1,10 +1,16 @@
-﻿#ifndef OURLABIB_H
+#ifndef OURLABIB_H
 #define OURLABIB_H
 
 #include <QMainWindow>
 #include <QModelIndex>
 #include "missions.h"
 #include "employes.h"
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QJsonArray>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class ourlabib; }
@@ -22,6 +28,7 @@ private slots:
     void on_pushButton_login_clicked();
     void on_label_forgot_linkActivated(const QString &link);
     void on_btnLogout_clicked();
+    void on_btnFaceID_clicked();
 
     // AccÃ¨s aux pages
     void on_btnEmployes_clicked();
@@ -87,11 +94,14 @@ private slots:
     void on_btnEnvoyerSMS_clicked();
     void on_btnCalendrier_clicked();
     void on_btnRetourCalendrier_clicked();
+    void highlightCalendarDates();
+    void on_calendarMissions_clicked(const QDate &date);
     void on_btnMail_clicked();
     void on_btnRetourMail_clicked();
     void on_btnEnvoyerMail_clicked();
     void on_btnQRCode_clicked();
     void on_btnRetourQRCode_clicked();
+    void on_btnConfigFaceID_clicked();
 
     // Boutons action EmployÃ©s
     void on_btnStatistiquesEmployes_clicked();
@@ -141,6 +151,12 @@ private slots:
 
     // Login / Quit
     void on_btnQuitApp_clicked();
+    void on_btnGestionMDP_clicked();
+    void on_btnCheckStatusMenu_clicked();
+    void on_btnRetourMDP_clicked();
+    void on_btnValiderReset_clicked();
+    void on_btnSupprimerDemande_clicked();
+    void on_tableViewDemandes_clicked(const QModelIndex &index);
 
     // ========== GESTION MISSIONS ==========
     void on_btnEnregistrerMission_clicked();
@@ -150,7 +166,7 @@ private slots:
     void on_btnAnnulerMission_clicked();
     void on_btnRechercherMission_clicked();
     void on_btnRefreshMission_clicked();
-    void on_calendarMissions_clicked(const QDate &date);
+
 
     // ========== GESTION EMPLOYÃ‰S ==========
     void loadEquipes();
@@ -172,6 +188,7 @@ private:
     void refreshEquipesTable();
     void refreshZonesTable();
     void refreshPoubellesTable();
+    void refreshDemandesTable();
 
     // Fonctions de validation
     bool saisieEquipeValide();
@@ -200,6 +217,7 @@ private:
     void afficherStatsMissions();
     void exporterMissionsPDF();
     Missions missionTmp;
+    void envoyerEmailResend(QString dest, QString sujet, QString corpsHtml);
 };
 
 #endif // OURLABIB_H

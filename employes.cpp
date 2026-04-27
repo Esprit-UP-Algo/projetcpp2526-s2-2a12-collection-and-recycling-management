@@ -127,11 +127,11 @@ QSqlQueryModel* Employe::afficher() {
     model->setHeaderData(1, Qt::Horizontal, "Nom");
     model->setHeaderData(2, Qt::Horizontal, "Email");
     model->setHeaderData(3, Qt::Horizontal, "Poste");
-    model->setHeaderData(4, Qt::Horizontal, "DisponibilitÃ©");
+    model->setHeaderData(4, Qt::Horizontal, "Disponibilite");
     model->setHeaderData(5, Qt::Horizontal, "Heures/Sem");
     model->setHeaderData(6, Qt::Horizontal, "Salaire (DT)");
     model->setHeaderData(7, Qt::Horizontal, "Sexe");
-    model->setHeaderData(8, Qt::Horizontal, "Ã‰quipe");
+    model->setHeaderData(8, Qt::Horizontal, "Equipe");
 
     return model;
 }

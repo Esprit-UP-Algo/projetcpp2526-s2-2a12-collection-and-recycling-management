@@ -1,4 +1,4 @@
-﻿#include "ourlabib.h"
+#include "ourlabib.h"
 #include "connection.h"
 #include "equipes.h"
 #include "poubelles.h"
@@ -6,11 +6,21 @@
 #include "missions.h"
 #include "employes.h"
 #include "ui_ourlabib.h"
+
+#ifdef USE_OPENCV
+#include <opencv2/opencv.hpp>
+#include <opencv2/objdetect.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/imgproc.hpp>
+#endif
+
 #include <QDebug>
+
 #include <QFileDialog>
 #include <QIntValidator>
 #include <QItemSelectionModel>
 #include <QMessageBox>
+#include <QRandomGenerator> 
 #include <QModelIndexList>
 #include <QPrinter>
 #include <QRegularExpression>
@@ -1128,13 +1138,186 @@ void ourlabib::on_btnEnvoyerSMS_clicked() {
 }
 
 void ourlabib::on_btnCalendrier_clicked() {
-  ui->stackedWidget->setCurrentIndex(9);
+    // ==========================================
+    // METIER AVANCE : Planification IA Intelligente
+    // ==========================================
+    QSqlQuery queryPoubelle;
+    // On analyse toutes les poubelles avec un état critique (> 80% ou Pleine)
+    queryPoubelle.prepare("SELECT ID_POUBELLE, ID_ZONE, NIVEAU_REMPLISSAGE FROM POUBELLE "
+                          "WHERE NIVEAU_REMPLISSAGE >= 80 OR UPPER(ETAT) = 'PLEINE'");
+    
+    if (queryPoubelle.exec()) {
+        int countMissionsGenerated = 0;
+        QString erreursDetails = "";
+        QDate today = QDate::currentDate();
+
+        while (queryPoubelle.next()) {
+            int idPoubelle = queryPoubelle.value(0).toInt();
+            int idZone = queryPoubelle.value(1).toInt();
+
+            // Vérifier si une mission urgente existe déjà pour *cette* poubelle aujourd'hui
+            QSqlQuery checkMission;
+            checkMission.prepare("SELECT COUNT(*) FROM MISSION WHERE UPPER(TYPE) LIKE :typeSearch AND TO_CHAR(DATE_MISSION, 'YYYY-MM-DD') = :date");
+            checkMission.bindValue(":typeSearch", "%P" + QString::number(idPoubelle) + "%");
+            checkMission.bindValue(":date", today.toString("yyyy-MM-dd"));
+            
+            if (checkMission.exec() && checkMission.next() && checkMission.value(0).toInt() == 0) {
+                // IMPORTANT: La table EQUIPE n'a pas de colonne ID_ZONE. On prend la première Active.
+                QSqlQuery backupEquipe;
+                backupEquipe.prepare("SELECT ID_EQUIPE FROM EQUIPE WHERE TRIM(UPPER(STATUT)) = 'ACTIVE'");
+                int idEquipeAssignee = 0;
+                
+                if (backupEquipe.exec() && backupEquipe.next()) {
+                    idEquipeAssignee = backupEquipe.value(0).toInt();
+                } else {
+                    // Repli
+                    QSqlQuery ult;
+                    ult.prepare("SELECT ID_EQUIPE FROM EQUIPE");
+                    if (ult.exec() && ult.next()) {
+                        idEquipeAssignee = ult.value(0).toInt();
+                    }
+                }
+
+                if (idEquipeAssignee > 0) {
+                    QString nomType = "Collecte Urgence (P" + QString::number(idPoubelle) + ")";
+                    
+                    QSqlQuery insertMission;
+                    insertMission.prepare("INSERT INTO MISSION (TYPE, DATE_MISSION, DUREE, ETAT, PRIORITE, ID_EQUIPE, ID_ZONE) "
+                                          "VALUES (:type, :date, 60, 'Planifiée', 'Critique', :equipe, :zone)");
+                    insertMission.bindValue(":type", nomType);
+                    insertMission.bindValue(":date", today);
+                    insertMission.bindValue(":equipe", idEquipeAssignee);
+                    insertMission.bindValue(":zone", idZone);
+                    
+                    if (insertMission.exec()) {
+                        countMissionsGenerated++;
+                    } else {
+                        erreursDetails += "Erreur Insertion pour P" + QString::number(idPoubelle) + " : " + insertMission.lastError().text() + "\n";
+                    }
+                } else {
+                     erreursDetails += "Erreur: Aucune équipe trouvée dans la base !\n";
+                }
+            }
+        }
+        
+        if (countMissionsGenerated > 0) {
+            QMessageBox::information(this, "Planification IA Terminée",
+                                     QString::number(countMissionsGenerated) + " mission(s) de collecte d'urgence ont été générées automatiquement.\n");
+            loadMissionsCombos();
+            refreshMissionsTable(); 
+        } else if (!erreursDetails.isEmpty()) {
+            QMessageBox::critical(this, "Planification Erreur DB", erreursDetails);
+        } else {
+            QMessageBox::information(this, "Planification", "Aucune nouvelle mission d'urgence requise. Toutes les poubelles pleines sont déja répertoriées, ou aucune n'a atteint le seuil critique (80%).");
+        }
+    } else {
+        QMessageBox::critical(this, "Erreur Critique", "Impossible de lire la table POUBELLE : " + queryPoubelle.lastError().text());
+    }
+    
+    // Si on a le calendrier, on le met à la date d'aujourd'hui
+    if (ui->calendarMissions) {
+        ui->calendarMissions->setSelectedDate(QDate::currentDate());
+        highlightCalendarDates(); 
+    }
+    
+    ui->stackedWidget->setCurrentIndex(9);
 }
 void ourlabib::on_btnRetourCalendrier_clicked() {
   ui->stackedWidget->setCurrentIndex(6);
 }
 
-void ourlabib::on_btnMail_clicked() { ui->stackedWidget->setCurrentIndex(10); }
+void ourlabib::on_btnMail_clicked() {
+    int idEquipe = 0;
+    QString nomEquipe = "Sélectionnée";
+    
+    // Essayer de récupérer l'ID de l'équipe depuis le combobox
+    if (ui->equipeMission->currentData().isValid()) {
+        idEquipe = ui->equipeMission->currentData().toInt();
+        nomEquipe = ui->equipeMission->currentText();
+    } else {
+        QString txt = ui->equipeMission->currentText();
+        if (txt.contains(" - ")) {
+            idEquipe = txt.split(" - ").first().toInt();
+            nomEquipe = txt.split(" - ").last();
+        } else {
+            idEquipe = txt.toInt(); // fallback
+        }
+    }
+
+    QString emails = "";
+    QString nomChef = "Chef d'équipe";
+
+    if (idEquipe > 0) {
+        // 1. Récupérer le nom du chef d'équipe
+        QSqlQuery qChef;
+        qChef.prepare("SELECT CHEF_EQUIPE FROM EQUIPE WHERE ID_EQUIPE = :idEquipe");
+        qChef.bindValue(":idEquipe", idEquipe);
+        if (qChef.exec() && qChef.next()) {
+            nomChef = qChef.value(0).toString();
+        }
+
+        // 2. Récupérer l'email du chef d'équipe uniquement
+        if (!nomChef.isEmpty()) {
+            QSqlQuery qEmailChef;
+            qEmailChef.prepare("SELECT EMAIL FROM EMPLOYE WHERE NOM = :nomChef");
+            qEmailChef.bindValue(":nomChef", nomChef);
+            if (qEmailChef.exec() && qEmailChef.next()) {
+                emails = qEmailChef.value(0).toString();
+            }
+        }
+    }
+
+    // En-tête professionnel du mail pour le Chef
+    QString corps = "==============================================================\n"
+                    "         ORDRE DE MISSION JOURNALIER - OURLABIB MANAGEMENT    \n"
+                    "==============================================================\n\n"
+                    "À l'attention de : " + nomChef + " (Chef de l'équipe " + nomEquipe + ")\n"
+                    "Date d'exécution : " + QDate::currentDate().toString("dd/MM/yyyy") + "\n\n"
+                    "Madame, Monsieur,\n\n"
+                    "En votre qualité de responsable, nous vous transmettons le récapitulatif détaillé "
+                    "des interventions assignées à votre équipe pour la journée en cours. "
+                    "Vous êtes chargé(e) d'en superviser la bonne exécution.\n\n"
+                    "DÉTAIL DES MISSIONS :\n"
+                    "--------------------------------------------------------------\n";
+
+    if (idEquipe > 0) {
+        QSqlQuery qMissions;
+        qMissions.prepare("SELECT TYPE, DUREE, PRIORITE, DESCRIPTION "
+                          "FROM MISSION WHERE ID_EQUIPE = :idEquipe AND TO_CHAR(DATE_MISSION, 'YYYY-MM-DD') = :date");
+        qMissions.bindValue(":idEquipe", idEquipe);
+        qMissions.bindValue(":date", QDate::currentDate().toString("yyyy-MM-dd"));
+        if (qMissions.exec()) {
+            int cpt = 1;
+            while (qMissions.next()) {
+                int dureeMin = qMissions.value(1).toInt();
+                QString dureeStr = QString::number(dureeMin / 60) + "h " + QString::number(dureeMin % 60) + "min";
+                
+                corps += QString::number(cpt) + ". TYPE D'INTERVENTION : [" + qMissions.value(0).toString().toUpper() + "]\n"
+                         "   Niveau de Priorité : " + qMissions.value(2).toString().toUpper() + "\n"
+                         "   Durée Estimée      : " + dureeStr + "\n"
+                         "   Directives         : " + qMissions.value(3).toString() + "\n"
+                         "--------------------------------------------------------------\n";
+                cpt++;
+            }
+            if(cpt == 1) corps += "Aucune intervention n'est planifiée pour votre équipe aujourd'hui.\n"
+                                  "Veuillez rester en attente de nouvelles affectations.\n--------------------------------------------------------------\n";
+        }
+    }
+    
+    corps += "\nNous comptons sur votre professionnalisme pour la stricte application des consignes "
+             "et le respect des délais impartis.\n\n"
+             "En cas d'anomalie sur le terrain, veuillez en référer immédiatement à votre supérieur hiérarchique.\n\n"
+             "Cordialement,\n\n"
+             "Département des Opérations et de la Planification\n"
+             "SYSTÈME DE GESTION OURLABIB";
+
+    ui->mailDestinataire->setText(emails);
+    ui->mailObjet->setText("[URGENT] Ordre de Mission du " + QDate::currentDate().toString("dd/MM/yyyy") + " - Équipe " + nomEquipe);
+    ui->mailCorps->setPlainText(corps);
+
+    ui->stackedWidget->setCurrentIndex(10);
+}
+
 void ourlabib::on_btnRetourMail_clicked() {
   ui->stackedWidget->setCurrentIndex(6);
 }
@@ -1143,16 +1326,16 @@ void ourlabib::on_btnEnvoyerMail_clicked() {
   QString dest = ui->mailDestinataire->text().trimmed();
   QString sujet = ui->mailObjet->text().trimmed();
   QString corps = ui->mailCorps->toPlainText().trimmed();
+
   if (dest.isEmpty() || sujet.isEmpty() || corps.isEmpty()) {
     QMessageBox::warning(this, "Erreur", "Veuillez remplir tous les champs.");
     return;
   }
-  QMessageBox::information(this, "Mail EnvoyÃ©",
-                           "Mail envoyÃ© avec succÃ¨s Ã  : " + dest);
-  ui->mailDestinataire->clear();
-  ui->mailObjet->clear();
-  ui->mailCorps->clear();
-  ui->stackedWidget->setCurrentIndex(6);
+
+  // Conversion du texte brut en HTML simple pour garder les retours à la ligne
+  QString corpsHtml = "<div style='font-family: monospace; white-space: pre-wrap;'>" + corps + "</div>";
+
+  envoyerEmailResend(dest, sujet, corpsHtml);
 }
 
 void ourlabib::on_btnQRCode_clicked() {
@@ -1333,11 +1516,24 @@ void ourlabib::on_tableViewMission_clicked(const QModelIndex &index) {
     ui->typeMission->setCurrentText(model->data(model->index(row, 1)).toString());
     ui->dateMission->setDate(model->data(model->index(row, 2)).toDate());
     ui->dureeMission->setTime(model->data(model->index(row, 3)).toTime());
-    ui->equipeMission->setCurrentText(model->data(model->index(row, 4)).toString());
-    ui->zoneMission->setCurrentText(model->data(model->index(row, 5)).toString());
-    ui->etatMission->setCurrentText(model->data(model->index(row, 6)).toString());
-    ui->prioriteMission->setCurrentText(model->data(model->index(row, 7)).toString());
-    ui->descriptionMission->setPlainText(model->data(model->index(row, 8)).toString());
+    ui->etatMission->setCurrentText(model->data(model->index(row, 4)).toString());
+    ui->prioriteMission->setCurrentText(model->data(model->index(row, 5)).toString());
+    
+    QString idEquipeStr = model->data(model->index(row, 6)).toString();
+    for(int i = 0; i < ui->equipeMission->count(); i++) {
+        if(ui->equipeMission->itemText(i).startsWith(idEquipeStr + " - ") || ui->equipeMission->itemData(i).toString() == idEquipeStr || ui->equipeMission->itemText(i) == idEquipeStr) {
+            ui->equipeMission->setCurrentIndex(i);
+            break;
+        }
+    }
+    
+    QString idZoneStr = model->data(model->index(row, 7)).toString();
+    for(int i = 0; i < ui->zoneMission->count(); i++) {
+        if(ui->zoneMission->itemText(i).startsWith(idZoneStr + " - ") || ui->zoneMission->itemData(i).toString() == idZoneStr || ui->zoneMission->itemText(i) == idZoneStr) {
+            ui->zoneMission->setCurrentIndex(i);
+            break;
+        }
+    }
 }
 
 void ourlabib::on_btnAnnulerMission_clicked() { clearMissionForm(); }
@@ -1785,9 +1981,7 @@ void ourlabib::exporterMissionsPDF() {
     QMessageBox::information(this, "Succès", "Export PDF réussi !");
 }
 
-void ourlabib::on_calendarMissions_clicked(const QDate &date) {
-    ui->tableViewMission->setModel(missionTmp.rechercher(date.toString("dd/MM/yyyy")));
-}
+
 
 void ourlabib::afficherStatsEmployes() {
     QSqlQuery query;
@@ -1834,5 +2028,236 @@ void ourlabib::loadMissionsCombos() {
     qZone.exec("SELECT ID_ZONE, NOM_ZONE FROM ZONES ORDER BY NOM_ZONE");
     while (qZone.next()) {
         ui->zoneMission->addItem(qZone.value(1).toString(), qZone.value(0).toInt());
+    }
+}
+
+void ourlabib::on_btnGestionMDP_clicked() {
+    ui->stackedWidget->setCurrentWidget(ui->pageGestionMDP);
+    refreshDemandesTable();
+}
+
+void ourlabib::on_btnRetourMDP_clicked() {
+    ui->stackedWidget->setCurrentIndex(1);
+}
+
+void ourlabib::refreshDemandesTable() {
+    QSqlQueryModel *model = new QSqlQueryModel();
+    
+    // On affiche les demandes qui n'ont pas encore été traitées (où REAL_PASS est NULL)
+    model->setQuery("SELECT NOM_UTILISATEUR, DATE_DEMANDE FROM DEMANDES_RESET WHERE REAL_PASS IS NULL ORDER BY DATE_DEMANDE DESC");
+    
+    // Amélioration des en-têtes pour l'affichage
+    model->setHeaderData(0, Qt::Horizontal, "Identifiant");
+    model->setHeaderData(1, Qt::Horizontal, "Date d'envoi");
+
+    ui->tableViewDemandes->setModel(model);
+    ui->tableViewDemandes->resizeColumnsToContents();
+    ui->tableViewDemandes->horizontalHeader()->setStretchLastSection(true);
+}
+
+void ourlabib::on_tableViewDemandes_clicked(const QModelIndex &index) {
+    if (!index.isValid()) return;
+    QString user = ui->tableViewDemandes->model()->data(ui->tableViewDemandes->model()->index(index.row(), 0)).toString();
+    ui->lineEdit_selectedUser->setText(user);
+    ui->lineEdit_newPass->clear();
+}
+
+void ourlabib::on_btnValiderReset_clicked() {
+    QString user = ui->lineEdit_selectedUser->text();
+    QString realPass = ui->lineEdit_newPass->text(); // Le MDP choisi par l'Admin
+
+    if (user.isEmpty() || realPass.isEmpty()) {
+        QMessageBox::warning(this, "Erreur", "Veuillez sélectionner un utilisateur et saisir son nouveau mot de passe.");
+        return;
+    }
+
+    Connection *c = Connection::instance();
+    QSqlQuery query(c->getDatabase());
+    // L'Admin ne fait que définir le REAL_PASS, le TEMP_PASS a déjà été généré par l'app du client
+    query.prepare("UPDATE DEMANDES_RESET SET REAL_PASS = :real "
+                  "WHERE NOM_UTILISATEUR = :user AND REAL_PASS IS NULL");
+    query.bindValue(":real", realPass);
+    query.bindValue(":user", user);
+
+    if (query.exec()) {
+        QSqlQuery commitQuery(c->getDatabase());
+        commitQuery.exec("COMMIT");
+        
+        QMessageBox::information(this, "Succès", 
+            "La demande de réinitialisation a été validée avec succès.\n"
+            "Un mot de passe temporaire a été généré et sera affiché à l'utilisateur "
+            "lorsqu'il vérifiera l'état de sa demande.");
+
+        refreshDemandesTable();
+        ui->lineEdit_selectedUser->clear();
+        ui->lineEdit_newPass->clear();
+    } else {
+        QMessageBox::critical(this, "Erreur", "Échec : " + query.lastError().text());
+    }
+}
+
+void ourlabib::on_btnSupprimerDemande_clicked() {
+    QString user = ui->lineEdit_selectedUser->text();
+    if (user.isEmpty()) return;
+
+    if (QMessageBox::question(this, "Suppression", "Voulez-vous supprimer cette demande ?",
+                                  QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+        Connection *c = Connection::instance();
+        QSqlQuery delQuery(c->getDatabase());
+        delQuery.prepare("DELETE FROM DEMANDES_RESET WHERE NOM_UTILISATEUR = :user");
+        delQuery.bindValue(":user", user);
+        
+        if (delQuery.exec()) {
+            QSqlQuery commitQuery(c->getDatabase());
+            commitQuery.exec("COMMIT");
+            refreshDemandesTable();
+            ui->lineEdit_selectedUser->clear();
+        }
+    }
+}
+void ourlabib::on_btnConfigFaceID_clicked() {
+#ifdef USE_OPENCV
+    cv::VideoCapture cap(0);
+    if (!cap.isOpened()) {
+        QMessageBox::critical(this, "Erreur Caméra", "Impossible d'accéder à la webcam.");
+        return;
+    }
+
+    cv::CascadeClassifier faceCascade;
+    if (!faceCascade.load("C:/Users/LENOVO/Desktop/qt/ourlabib/OpenCV-MinGW-Build-OpenCV-4.5.5-x64/OpenCV-MinGW-Build-OpenCV-4.5.5-x64/etc/haarcascades/haarcascade_frontalface_default.xml")) {
+        QMessageBox::warning(this, "Erreur", "Modèle de détection faciale introuvable.");
+        return;
+    }
+
+    QMessageBox::information(this, "Enregistrement Face ID", "Veuillez fixer la caméra. Appuyez sur 'Espace' pour enregistrer votre visage.");
+
+    cv::Mat frame, faceROI;
+    while (true) {
+        cap >> frame;
+        if (frame.empty()) break;
+
+        cv::Mat gray;
+        cv::cvtColor(frame, gray, cv::COLOR_BGR2GRAY);
+        std::vector<cv::Rect> faces;
+        faceCascade.detectMultiScale(gray, faces, 1.1, 4, 0, cv::Size(100, 100));
+
+        for (const auto& r : faces) {
+            cv::rectangle(frame, r, cv::Scalar(0, 255, 0), 2);
+            faceROI = gray(r);
+        }
+
+        cv::imshow("Enregistrement Face ID", frame);
+        char key = (char)cv::waitKey(30);
+        if (key == 27) break; // Echap
+        if (key == ' ' && !faceROI.empty()) { // Espace
+            // Redimensionner pour avoir une taille standard
+            cv::resize(faceROI, faceROI, cv::Size(200, 200));
+
+            // Convertir cv::Mat en QByteArray pour la base de données
+            std::vector<uchar> buf;
+            cv::imencode(".png", faceROI, buf);
+            QByteArray data = QByteArray::fromRawData(reinterpret_cast<const char*>(buf.data()), buf.size());
+
+            Connection *c = Connection::instance();
+            QSqlQuery query(c->getDatabase());
+            query.prepare("UPDATE UTILISATEUR SET FACE_DATA = :face WHERE NOM_UTILISATEUR = :user");
+            query.bindValue(":face", data);
+            query.bindValue(":user", currentUser);
+
+            if (query.exec()) {
+                QSqlQuery commit("COMMIT");
+                commit.exec();
+                QMessageBox::information(this, "Succès", "Votre visage a été enregistré avec succès !");
+            } else {
+                QMessageBox::critical(this, "Erreur DB", "Échec de l'enregistrement : " + query.lastError().text());
+            }
+            break;
+        }
+    }
+    cv::destroyAllWindows();
+    cap.release();
+#else
+    QMessageBox::warning(this, "Indisponible", "Veuillez activer OpenCV pour cette fonctionnalité.");
+#endif
+}
+
+void ourlabib::envoyerEmailResend(QString dest, QString sujet, QString corpsHtml) {
+    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+    QUrl url("https://api.resend.com/emails");
+    QNetworkRequest request(url);
+    QString apiKey = "re_SHJeCokf_94GVt5ncK3aZMYdZ1ZeQQG2P";
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    request.setRawHeader("Authorization", "Bearer " + apiKey.toUtf8());
+    QJsonObject emailData;
+    emailData["from"] = "OurLabib <onboarding@resend.dev>";
+    emailData["to"] = dest;
+    emailData["subject"] = sujet;
+    emailData["html"] = corpsHtml;
+    QJsonDocument doc(emailData);
+    QByteArray data = doc.toJson();
+    QNetworkReply *reply = manager->post(request, data);
+    connect(reply, &QNetworkReply::finished, this, [this, reply, manager]() {
+        if (reply->error() == QNetworkReply::NoError) {
+            QMessageBox::information(this, "Succès", "L'email a été envoyé automatiquement via Resend !");
+            ui->mailDestinataire->clear();
+            ui->mailObjet->clear();
+            ui->mailCorps->clear();
+            ui->stackedWidget->setCurrentIndex(6);
+        } else {
+            QString errorMsg = reply->errorString();
+            QByteArray details = reply->readAll();
+            QMessageBox::critical(this, "Erreur Resend", "L'envoi a échoué.\nErreur : " + errorMsg + "\nDétails : " + details);
+        }
+        reply->deleteLater();
+        manager->deleteLater();
+    });
+}
+
+void ourlabib::highlightCalendarDates() {
+    if (!ui->calendarMissions) return;
+
+    ui->calendarMissions->setDateTextFormat(QDate(), QTextCharFormat());
+
+    QTextCharFormat format;
+    format.setBackground(QColor("#e74c3c"));
+    format.setForeground(Qt::white);
+    format.setFontWeight(QFont::Bold);
+
+    Connection *c = Connection::instance();
+    QSqlQuery query(c->getDatabase());
+    query.prepare("SELECT DISTINCT TO_CHAR(DATE_MISSION, 'YYYY-MM-DD') FROM MISSION");
+    if (query.exec()) {
+        while (query.next()) {
+            QDate missionDate = QDate::fromString(query.value(0).toString(), "yyyy-MM-dd");
+            if (missionDate.isValid()) {
+                ui->calendarMissions->setDateTextFormat(missionDate, format);
+            }
+        }
+    }
+}
+
+void ourlabib::on_calendarMissions_clicked(const QDate &date) {
+    Connection *c = Connection::instance();
+    QSqlQuery query(c->getDatabase());
+    query.prepare("SELECT TYPE, PRIORITE, ETAT FROM MISSION WHERE TO_CHAR(DATE_MISSION, 'YYYY-MM-DD') = :date");
+    query.bindValue(":date", date.toString("yyyy-MM-dd"));
+    
+    QString info = "Missions planifiées pour le " + date.toString("dd/MM/yyyy") + " :\n\n";
+    int count = 0;
+    
+    if (query.exec()) {
+        while (query.next()) {
+            count++;
+            info += "🔸 " + query.value(0).toString() + " [" + query.value(1).toString() + "]\n";
+            info += "   État: " + query.value(2).toString() + "\n";
+        }
+    }
+    
+    if (count > 0) {
+        QMessageBox::information(this, "Détails de la date (OURLABIB)", info);
+    } else {
+        QMessageBox::information(this, "Détails de la date (OURLABIB)", 
+                               "📅 Aucune mission planifiée pour cette date.\n\n"
+                               "Les dates avec des missions sont marquées en rouge sur le calendrier.");
     }
 }

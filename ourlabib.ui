@@ -234,6 +234,24 @@
             </widget>
            </item>
            <item>
+            <widget class="QPushButton" name="btnFaceID">
+             <property name="text">
+              <string>📷 Face ID Login</string>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">
+               background-color: #2196F3;
+               color: white;
+               border-radius: 18px;
+               padding: 10px;
+               font-weight: bold;
+               font-size: 14px;
+               margin-top: 5px;
+              </string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <spacer name="loginButtonSpacer">
              <property name="orientation">
               <enum>Qt::Orientation::Vertical</enum>
@@ -400,6 +418,36 @@
             <widget class="QPushButton" name="btnMissions">
              <property name="text">
               <string>🎯 Missions</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btnGestionMDP">
+             <property name="text">
+              <string>🔑 Gestion MDP</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btnConfigFaceID">
+             <property name="text">
+              <string>📷 Configurer Face ID</string>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7;</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btnCheckStatusMenu">
+             <property name="text">
+              <string>🔔 Ma Demande MDP</string>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: #fff3cd; color: #856404; font-weight: bold; border: 1px solid #ffc107; border-radius: 4px;</string>
+             </property>
+             <property name="visible">
+              <bool>false</bool>
              </property>
             </widget>
            </item>
@@ -4986,6 +5034,110 @@
               <set>Qt::AlignmentFlag::AlignCenter</set>
              </property>
             </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="pageGestionMDP">
+       <layout class="QVBoxLayout" name="layoutGestionMDP">
+        <item>
+         <layout class="QHBoxLayout" name="headerMDP">
+          <item>
+           <widget class="QPushButton" name="btnRetourMDP">
+            <property name="text">
+             <string>◀ Retour</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTitleMDP">
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>🔑 Gestion des Mots de Passe</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="spacerMDP">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTableView" name="tableViewDemandes"/>
+        </item>
+        <item>
+         <widget class="QFrame" name="frameMDPAction">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>150</height>
+           </size>
+          </property>
+          <layout class="QGridLayout" name="gridMDP">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_75">
+             <property name="text">
+              <string>Utilisateur :</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="lineEdit_selectedUser">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_76">
+             <property name="text">
+              <string>Nouveau MDP :</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLineEdit" name="lineEdit_newPass"/>
+           </item>
+           <item row="2" column="0" colspan="2">
+            <layout class="QHBoxLayout" name="horMDPBtns">
+             <item>
+              <widget class="QPushButton" name="btnValiderReset">
+               <property name="text">
+                <string>Valider et Envoyer</string>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background-color: #28a745; color: white; font-weight: bold;</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="btnSupprimerDemande">
+               <property name="text">
+                <string>Supprimer Demande</string>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background-color: #dc3545; color: white;</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
           </layout>
          </widget>
