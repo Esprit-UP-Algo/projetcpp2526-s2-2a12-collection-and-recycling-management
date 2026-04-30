@@ -120,6 +120,11 @@ ourlabib::ourlabib(QWidget *parent)
       QAbstractItemView::ExtendedSelection);
   ui->tableViewPoubelles->setSelectionBehavior(QAbstractItemView::SelectRows);
 
+  // Arduino initialization
+  arduino = nullptr;
+  arduinoConnected = false;
+  connectArduino();
+
   // Page de dÃ©marrage
   ui->stackedWidget->setCurrentIndex(0);
 }
@@ -1673,44 +1678,49 @@ void ourlabib::on_tableEmployes_clicked(const QModelIndex &index) {
   ui->heuresTravailEmploye->setValue(model->data(model->index(row, 5)).toInt());
   ui->salaireEmploye->setValue(model->data(model->index(row, 6)).toDouble());
 
-  QString sexe = model->data(model->index(row, 7)).toString();
-  if (sexe == "Homme")
-    ui->sexeEmploye->setCurrentText("Masculin");
-  else if (sexe == "Femme")
-    ui->sexeEmploye->setCurrentText("FÃ©minin");
-  else
-    ui->sexeEmploye->setCurrentText("Non spÃ©cifiÃ©");
+   QString sexe = model->data(model->index(row, 7)).toString();
+   if (sexe == "Homme")
+     ui->sexeEmploye->setCurrentText("Masculin");
+   else if (sexe == "Femme")
+     ui->sexeEmploye->setCurrentText("Féminin");
+   else
+     ui->sexeEmploye->setCurrentText("Non spécifié");
 
-  QString nomEquipe = model->data(model->index(row, 8)).toString();
+   // RFID UID
+   ui->rfidUidEmploye->setText(model->data(model->index(row, 8)).toString());
+
+   QString nomEquipe = model->data(model->index(row, 9)).toString();
   int indexEquipe = ui->comboBoxEquipeEmploye->findText(nomEquipe);
   if (indexEquipe >= 0)
     ui->comboBoxEquipeEmploye->setCurrentIndex(indexEquipe);
 }
 
 void ourlabib::on_btnEnregistrerEmploye_clicked() {
-  QString nom = ui->nomEmploye->text().trimmed();
-  QString email = ui->emailEmploye->text().trimmed();
-  QString poste = ui->posteEmploye->currentText();
-  QString dispo = ui->disponibiliteEmploye->currentText();
-  int heures = ui->heuresTravailEmploye->value();
-  double sal = ui->salaireEmploye->value();
+   QString nom = ui->nomEmploye->text().trimmed();
+   QString email = ui->emailEmploye->text().trimmed();
+   QString poste = ui->posteEmploye->currentText();
+   QString dispo = ui->disponibiliteEmploye->currentText();
+   int heures = ui->heuresTravailEmploye->value();
+   double sal = ui->salaireEmploye->value();
 
-  QString sexe;
-  if (ui->sexeEmploye->currentText() == "Masculin") {
-    sexe = "Homme";
-  } else if (ui->sexeEmploye->currentText() == "FÃ©minin") {
-    sexe = "Femme";
-  } else {
-    sexe = "Homme";
-  }
+   QString sexe;
+   if (ui->sexeEmploye->currentText() == "Masculin") {
+     sexe = "Homme";
+   } else if (ui->sexeEmploye->currentText() == "Féminin") {
+     sexe = "Femme";
+   } else {
+     sexe = "Homme";
+   }
 
-  int idEquipe = ui->comboBoxEquipeEmploye->currentData().toInt();
+   QString rfid = ui->rfidUidEmploye->text().trimmed();
 
-  if (nom.isEmpty() || email.isEmpty() || poste.isEmpty()) {
-    QMessageBox::warning(this, "Champs manquants",
-                         "Les champs Nom, Email et Poste sont obligatoires !");
-    return;
-  }
+   int idEquipe = ui->comboBoxEquipeEmploye->currentData().toInt();
+
+   if (nom.isEmpty() || email.isEmpty() || poste.isEmpty()) {
+     QMessageBox::warning(this, "Champs manquants",
+                          "Les champs Nom, Email et Poste sont obligatoires !");
+     return;
+   }
 
   if (!email.contains("@") || !email.contains(".")) {
     QMessageBox::warning(this, "Email invalide",
@@ -1720,54 +1730,74 @@ void ourlabib::on_btnEnregistrerEmploye_clicked() {
 
   if (sal <= 0) {
     QMessageBox::warning(this, "Salaire invalide",
-                         "Le salaire doit Ãªtre supÃ©rieur Ã  0.");
+                         "Le salaire doit être supérieur à 0.");
     return;
   }
 
   if (idEquipe == 0) {
-    QMessageBox::warning(this, "Ã‰quipe invalide",
-                         "Veuillez sÃ©lectionner une Ã©quipe valide.");
+    QMessageBox::warning(this, "Équipe invalide",
+                         "Veuillez sélectionner une équipe valide.");
     return;
   }
 
-  QSqlQuery checkEmail(Connection::instance()->getDatabase());
-  checkEmail.prepare("SELECT COUNT(*) FROM EMPLOYE WHERE EMAIL = :email");
-  checkEmail.bindValue(":email", email);
-  checkEmail.exec();
-  if (checkEmail.next() && checkEmail.value(0).toInt() > 0) {
-    QMessageBox::warning(this, "Email existant",
-                         "Cet email est dÃ©jÃ  utilisÃ© par un autre employÃ©!");
-    return;
-  }
+   QSqlQuery checkEmail(Connection::instance()->getDatabase());
+   checkEmail.prepare("SELECT COUNT(*) FROM EMPLOYE WHERE EMAIL = :email");
+   checkEmail.bindValue(":email", email);
+   checkEmail.exec();
+   if (checkEmail.next() && checkEmail.value(0).toInt() > 0) {
+     QMessageBox::warning(this, "Email existant",
+                          "Cet email est déjà utilisé par un autre employé!");
+     return;
+   }
 
-  Employe emp(0, nom, email, poste, dispo, heures, sal, sexe, idEquipe);
-  bool ok = emp.ajouter();
+   // Check duplicate RFID UID if provided
+   if (!rfid.isEmpty()) {
+       QSqlQuery checkRfid(Connection::instance()->getDatabase());
+       checkRfid.prepare("SELECT COUNT(*) FROM EMPLOYE WHERE RFID_UID = :rfid");
+       checkRfid.bindValue(":rfid", rfid);
+       checkRfid.exec();
+       if (checkRfid.next() && checkRfid.value(0).toInt() > 0) {
+           QMessageBox::warning(this, "RFID existant",
+                                "Cette carte RFID est déjà assignée à un autre employé!");
+           return;
+       }
+   }
 
-  if (ok) {
-    QMessageBox::information(this, "SuccÃ¨s", "EmployÃ© ajoutÃ© avec succÃ¨s !");
-    rafraichirTableEmployes(ui);
-    ui->idEmploye->clear();
-    ui->nomEmploye->clear();
-    ui->emailEmploye->clear();
-    ui->heuresTravailEmploye->setValue(35);
-    ui->salaireEmploye->setValue(2500.0);
-  } else {
+   Employe emp(0, nom, email, poste, dispo, heures, sal, sexe, rfid, idEquipe);
+   bool ok = emp.ajouter();
+
+   if (ok) {
+     QMessageBox::information(this, "Succès", "Employé ajouté avec succès !");
+
+     // Add RFID to Arduino's authorized list if provided
+     if (!rfid.isEmpty()) {
+         arduino->write_to_arduino("ADD_CARD:" + rfid + ":" + nom + "\n");
+     }
+
+     rafraichirTableEmployes(ui);
+     ui->idEmploye->clear();
+     ui->nomEmploye->clear();
+     ui->emailEmploye->clear();
+     ui->rfidUidEmploye->clear();
+     ui->heuresTravailEmploye->setValue(35);
+     ui->salaireEmploye->setValue(2500.0);
+   } else {
     QMessageBox::critical(this, "Erreur",
-                          "Ã‰chec de l'ajout. VÃ©rifiez les donnÃ©es saisies.\n"
-                          "(Email dupliquÃ© ou contrainte BD non respectÃ©e)");
+                          "Échec de l'ajout. Vérifiez les données saisies.\n"
+                          "(Email dupliqué ou contrainte BD non respectée)");
   }
 }
 
 void ourlabib::on_btnSupprimerEmploye_clicked() {
   if (selectedEmployeId == -1) {
-    QMessageBox::warning(this, "Aucune sÃ©lection",
-                         "Veuillez sÃ©lectionner un employÃ© dans le tableau.");
+    QMessageBox::warning(this, "Aucune sélection",
+                         "Veuillez sélectionner un employé dans le tableau.");
     return;
   }
 
   QMessageBox::StandardButton rep = QMessageBox::question(
       this, "Confirmation",
-      "Voulez-vous vraiment supprimer cet employÃ© (ID = " +
+      "Voulez-vous vraiment supprimer cet employé (ID = " +
           QString::number(selectedEmployeId) + ") ?",
       QMessageBox::Yes | QMessageBox::No);
   if (rep != QMessageBox::Yes)
@@ -1776,7 +1806,7 @@ void ourlabib::on_btnSupprimerEmploye_clicked() {
   bool ok = empTmp.supprimer(selectedEmployeId);
 
   if (ok) {
-    QMessageBox::information(this, "SuccÃ¨s", "EmployÃ© supprimÃ© avec succÃ¨s !");
+    QMessageBox::information(this, "Succès", "Employé supprimé avec succès !");
     selectedEmployeId = -1;
     rafraichirTableEmployes(ui);
     ui->idEmploye->clear();
@@ -1786,16 +1816,16 @@ void ourlabib::on_btnSupprimerEmploye_clicked() {
     ui->salaireEmploye->setValue(2500.0);
   } else {
     QMessageBox::critical(this, "Erreur",
-                          "Ã‰chec de la suppression.\n"
-                          "(L'employÃ© est peut-Ãªtre liÃ© Ã  une Ã©quipe)");
+                          "Échec de la suppression.\n"
+                          "(L'employé est peut-être lié à une équipe)");
   }
 }
 
 void ourlabib::on_btnModifierEmploye_clicked() {
   if (selectedEmployeId == -1) {
     QMessageBox::warning(
-        this, "Aucune sÃ©lection",
-        "Veuillez d'abord cliquer sur un employÃ© dans le tableau.");
+        this, "Aucune sélection",
+        "Veuillez d'abord cliquer sur un employé dans le tableau.");
     return;
   }
 
@@ -1809,31 +1839,52 @@ void ourlabib::on_btnModifierEmploye_clicked() {
   QString sexe;
   if (ui->sexeEmploye->currentText() == "Masculin") {
     sexe = "Homme";
-  } else if (ui->sexeEmploye->currentText() == "FÃ©minin") {
+  } else if (ui->sexeEmploye->currentText() == "Féminin") {
     sexe = "Femme";
   } else {
     sexe = "Homme";
   }
 
-  int idEquipe = ui->comboBoxEquipeEmploye->currentData().toInt();
+   int idEquipe = ui->comboBoxEquipeEmploye->currentData().toInt();
+   QString rfid = ui->rfidUidEmploye->text().trimmed();
 
-  if (nom.isEmpty() || email.isEmpty() || poste.isEmpty()) {
-    QMessageBox::warning(this, "Champs manquants",
-                         "Nom, Email et Poste sont obligatoires !");
-    return;
-  }
+   if (nom.isEmpty() || email.isEmpty() || poste.isEmpty()) {
+     QMessageBox::warning(this, "Champs manquants",
+                          "Nom, Email et Poste sont obligatoires !");
+     return;
+   }
 
-  Employe emp(selectedEmployeId, nom, email, poste, dispo, heures, sal, sexe,
-              idEquipe);
-  bool ok = emp.modifier(selectedEmployeId);
+   // Check duplicate RFID UID if provided (excluding current employee)
+   if (!rfid.isEmpty()) {
+       QSqlQuery checkRfid(Connection::instance()->getDatabase());
+       checkRfid.prepare("SELECT COUNT(*) FROM EMPLOYE WHERE RFID_UID = :rfid AND ID_EMPLOYE != :id");
+       checkRfid.bindValue(":rfid", rfid);
+       checkRfid.bindValue(":id", selectedEmployeId);
+       checkRfid.exec();
+       if (checkRfid.next() && checkRfid.value(0).toInt() > 0) {
+           QMessageBox::warning(this, "RFID existant",
+                                "Cette carte RFID est déjà assignée à un autre employé!");
+           return;
+       }
+   }
 
-  if (ok) {
-    QMessageBox::information(this, "SuccÃ¨s", "EmployÃ© modifiÃ© avec succÃ¨s !");
-    rafraichirTableEmployes(ui);
-  } else {
+   Employe emp(selectedEmployeId, nom, email, poste, dispo, heures, sal, sexe,
+               rfid, idEquipe);
+   bool ok = emp.modifier(selectedEmployeId);
+
+   if (ok) {
+     QMessageBox::information(this, "Succès", "Employé modifié avec succès !");
+
+     // Update RFID in Arduino's authorized list if changed
+     if (!rfid.isEmpty()) {
+         arduino->write_to_arduino("ADD_CARD:" + rfid + ":" + nom + "\n");
+     }
+
+     rafraichirTableEmployes(ui);
+   } else {
     QMessageBox::critical(this, "Erreur",
-                          "Ã‰chec de la modification.\n"
-                          "VÃ©rifiez les donnÃ©es saisies.");
+                          "Échec de la modification.\n"
+                          "Vérifiez les données saisies.");
   }
 }
 
@@ -1851,7 +1902,7 @@ void ourlabib::on_btnRechercherEmploye_clicked() {
   int nbResultats = model->rowCount();
   if (nbResultats == 0)
     QMessageBox::information(this, "Recherche",
-                             "Aucun employÃ© trouvÃ© pour : " + valeur);
+                             "Aucun employé trouvé pour : " + valeur);
 }
 
 void ourlabib::on_btnRefreshEmploye_clicked() {
@@ -1867,12 +1918,13 @@ void ourlabib::on_btnRefreshEmploye_clicked() {
 }
 
 void ourlabib::on_btnAnnulerEmploye_clicked() {
-  ui->idEmploye->clear();
-  ui->nomEmploye->clear();
-  ui->emailEmploye->clear();
-  ui->heuresTravailEmploye->setValue(35);
-  ui->salaireEmploye->setValue(2500.0);
-  selectedEmployeId = -1;
+   ui->idEmploye->clear();
+   ui->nomEmploye->clear();
+   ui->emailEmploye->clear();
+   ui->rfidUidEmploye->clear();
+   ui->heuresTravailEmploye->setValue(35);
+   ui->salaireEmploye->setValue(2500.0);
+   selectedEmployeId = -1;
 }
 
 void ourlabib::on_btnExportEmploye_clicked() {
@@ -1887,7 +1939,7 @@ void ourlabib::on_btnExportEmploye_clicked() {
   QPainter painter(&pdf);
 
   painter.setFont(QFont("Arial", 20, QFont::Bold));
-  painter.drawText(3000, 1000, "Liste des EmployÃ©s");
+  painter.drawText(3000, 1000, "Liste des Employés");
   painter.setFont(QFont("Arial", 10));
 
   QSqlQueryModel *model = empTmp.afficher();
@@ -1895,7 +1947,7 @@ void ourlabib::on_btnExportEmploye_clicked() {
   painter.drawText(500, y, "Nom");
   painter.drawText(2500, y, "Email");
   painter.drawText(5500, y, "Poste");
-  painter.drawText(7000, y, "DisponibilitÃ©");
+  painter.drawText(7000, y, "Disponibilité");
   painter.drawText(8500, y, "Heures");
   y += 500;
 
@@ -1913,7 +1965,7 @@ void ourlabib::on_btnExportEmploye_clicked() {
   }
 
   painter.end();
-  QMessageBox::information(this, "Export PDF", "L'exportation PDF a rÃ©ussi !");
+  QMessageBox::information(this, "Export PDF", "L'exportation PDF a réussi !");
   QDesktopServices::openUrl(QUrl::fromLocalFile(fileName));
 }
 
@@ -1921,8 +1973,8 @@ void ourlabib::on_btnTrierEmploye_clicked() {
   QSqlQueryModel *model = empTmp.trier("HEURES_TRAVAIL", "ASC");
   ui->tableEmployes->setModel(model);
   QMessageBox::information(
-      this, "Tri rÃ©ussi",
-      "Les employÃ©s ont Ã©tÃ© triÃ©s selon leurs heures de travail.");
+      this, "Tri réussi",
+      "Les employés ont été triés selon leurs heures de travail.");
 }
 
 void ourlabib::afficherStatsMissions() {
@@ -1981,8 +2033,6 @@ void ourlabib::exporterMissionsPDF() {
     QMessageBox::information(this, "Succès", "Export PDF réussi !");
 }
 
-
-
 void ourlabib::afficherStatsEmployes() {
     QSqlQuery query;
     query.exec("SELECT POSTE, COUNT(*) FROM EMPLOYE GROUP BY POSTE");
@@ -2001,7 +2051,6 @@ void ourlabib::afficherStatsEmployes() {
     QChartView *chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
 
-    // Recherche de layoutStatsContent dans pageStatsEmployes
     if (ui->layoutStatsContent->count() > 0) {
         QLayoutItem* item;
         while ((item = ui->layoutStatsContent->takeAt(0)) != nullptr) {
@@ -2043,10 +2092,8 @@ void ourlabib::on_btnRetourMDP_clicked() {
 void ourlabib::refreshDemandesTable() {
     QSqlQueryModel *model = new QSqlQueryModel();
     
-    // On affiche les demandes qui n'ont pas encore été traitées (où REAL_PASS est NULL)
     model->setQuery("SELECT NOM_UTILISATEUR, DATE_DEMANDE FROM DEMANDES_RESET WHERE REAL_PASS IS NULL ORDER BY DATE_DEMANDE DESC");
     
-    // Amélioration des en-têtes pour l'affichage
     model->setHeaderData(0, Qt::Horizontal, "Identifiant");
     model->setHeaderData(1, Qt::Horizontal, "Date d'envoi");
 
@@ -2064,7 +2111,7 @@ void ourlabib::on_tableViewDemandes_clicked(const QModelIndex &index) {
 
 void ourlabib::on_btnValiderReset_clicked() {
     QString user = ui->lineEdit_selectedUser->text();
-    QString realPass = ui->lineEdit_newPass->text(); // Le MDP choisi par l'Admin
+    QString realPass = ui->lineEdit_newPass->text(); 
 
     if (user.isEmpty() || realPass.isEmpty()) {
         QMessageBox::warning(this, "Erreur", "Veuillez sélectionner un utilisateur et saisir son nouveau mot de passe.");
@@ -2073,7 +2120,6 @@ void ourlabib::on_btnValiderReset_clicked() {
 
     Connection *c = Connection::instance();
     QSqlQuery query(c->getDatabase());
-    // L'Admin ne fait que définir le REAL_PASS, le TEMP_PASS a déjà été généré par l'app du client
     query.prepare("UPDATE DEMANDES_RESET SET REAL_PASS = :real "
                   "WHERE NOM_UTILISATEUR = :user AND REAL_PASS IS NULL");
     query.bindValue(":real", realPass);
@@ -2150,10 +2196,8 @@ void ourlabib::on_btnConfigFaceID_clicked() {
         char key = (char)cv::waitKey(30);
         if (key == 27) break; // Echap
         if (key == ' ' && !faceROI.empty()) { // Espace
-            // Redimensionner pour avoir une taille standard
             cv::resize(faceROI, faceROI, cv::Size(200, 200));
 
-            // Convertir cv::Mat en QByteArray pour la base de données
             std::vector<uchar> buf;
             cv::imencode(".png", faceROI, buf);
             QByteArray data = QByteArray::fromRawData(reinterpret_cast<const char*>(buf.data()), buf.size());
@@ -2257,7 +2301,157 @@ void ourlabib::on_calendarMissions_clicked(const QDate &date) {
         QMessageBox::information(this, "Détails de la date (OURLABIB)", info);
     } else {
         QMessageBox::information(this, "Détails de la date (OURLABIB)", 
-                               "📅 Aucune mission planifiée pour cette date.\n\n"
-                               "Les dates avec des missions sont marquées en rouge sur le calendrier.");
+                                "📅 Aucune mission planifiée pour cette date.\n\n"
+                                "Les dates avec des missions sont marquées en rouge sur le calendrier.");
+     }
+}
+
+// ============================================================
+// ARDUINO & RFID FUNCTIONS
+// ============================================================
+
+void ourlabib::connectArduino() {
+    if (!arduino) {
+        arduino = new Arduino();
     }
+
+    int result = arduino->connect_arduino();
+    if (result == 0) {
+        arduinoConnected = true;
+        qDebug() << "Arduino connecté avec succès sur le port" << arduino->getarduino_port_name();
+
+        // Clear existing cards on Arduino
+        arduino->write_to_arduino("CLEAR_CARDS\n");
+
+        // Load all RFID UIDs from database into Arduino's authorized list
+        QSqlQuery query(Connection::instance()->getDatabase());
+        query.prepare("SELECT RFID_UID, NOM FROM EMPLOYE WHERE RFID_UID IS NOT NULL AND RFID_UID != ''");
+        if (query.exec()) {
+            int count = 0;
+            while (query.next()) {
+                QString uid = query.value(0).toString();
+                QString name = query.value(1).toString();
+                // Send ADD_CARD command: ADD_CARD:UID:Name
+                arduino->write_to_arduino("ADD_CARD:" + uid + ":" + name + "\n");
+                count++;
+            }
+            qDebug() << count << "cartes RFID chargées depuis la base de données";
+        }
+
+        // Signal to Arduino that we're ready to process RFID scans
+        arduino->write_to_arduino("READY\n");
+
+        // Connecter le signal readyRead du port série
+        connect(arduino->getserial(), &QSerialPort::readyRead, this, [this]() {
+            static QByteArray buffer;
+            buffer.append(arduino->read_from_arduino());
+            int newlineIndex = buffer.indexOf('\n');
+            while (newlineIndex != -1) {
+                QByteArray line = buffer.left(newlineIndex);
+                buffer.remove(0, newlineIndex + 1);
+                QString uid = QString::fromUtf8(line).trimmed();
+                if (!uid.isEmpty()) {
+                    onRfidRead(uid);
+                }
+                newlineIndex = buffer.indexOf('\n');
+            }
+        });
+
+        QMessageBox::information(this, "Arduino", "Arduino connecté avec succès");
+    } else {
+        arduinoConnected = false;
+        qDebug() << "Échec de connexion Arduino";
+        QMessageBox::warning(this, "Arduino", "Arduino non détecté. Vérifiez la connexion.");
+    }
+}
+
+void ourlabib::on_btnScanRfidEmploye_clicked() {
+    if (!arduinoConnected) {
+        QMessageBox::warning(this, "Erreur", "Arduino n'est pas connecté. Veuillez vérifier la connexion.");
+        return;
+    }
+
+    ui->rfidUidEmploye->setText("En attente de scan...");
+    qDebug() << "En attente de scanned RFID card...";
+    // Update LCD to show scanning prompt
+    arduino->write_to_arduino("LCD:Scan new card:Please present card\n");
+}
+
+void ourlabib::onRfidRead(const QString &uid) {
+    if (ui->rfidUidEmploye && ui->rfidUidEmploye->text() == "En attente de scan...") {
+        ui->rfidUidEmploye->setText(uid);
+        arduino->write_to_arduino("LCD:Card Scanned:UID stored\n");
+        return;
+    } else if (ui->rfidUidEmploye && ui->rfidUidEmploye->text() == uid) {
+        // Ignore duplicate scan
+        return;
+    }
+
+    Employe emp;
+    QSqlQuery query(Connection::instance()->getDatabase());
+    query.prepare("SELECT ID_EMPLOYE, NOM FROM EMPLOYE WHERE RFID_UID = :rfid");
+    query.bindValue(":rfid", uid);
+
+    if (query.exec() && query.next()) {
+        int employeeId = query.value(0).toInt();
+        QString employeeName = query.value(1).toString();
+        QString mission = getEmployeeMission(employeeId);
+        displayWelcomeOnLcd(employeeName, mission.isEmpty() ? "Aucune mission assignée" : mission);
+        QMessageBox::information(this, "Pointage", 
+                                 "👤 " + employeeName + "\n" +
+                                 "📋 Mission: " + mission);
+    } else {
+        arduino->write_to_arduino("LCD:ACCES REFUSE:Carte inconnue");
+        QMessageBox::warning(this, "Pointage", "Carte RFID non enregistrée");
+    }
+}
+
+QString ourlabib::getEmployeeMission(int employeeId) {
+    QSqlQuery query(Connection::instance()->getDatabase());
+    // Get the most recent mission for the employee's team regardless of state
+    query.prepare("SELECT m.TYPE, m.DATE_MISSION "
+                  "FROM EMPLOYE e "
+                  "JOIN MISSION m ON e.ID_EQUIPE = m.ID_EQUIPE "
+                  "WHERE e.ID_EMPLOYE = :idEmp "
+                  "ORDER BY m.DATE_MISSION DESC");
+    query.bindValue(":idEmp", employeeId);
+
+    if (!query.exec()) {
+        qDebug() << "SQL ERROR in getEmployeeMission:" << query.lastError().text();
+        return "Erreur BD";
+    }
+
+    if (query.next()) {
+        QString type = query.value(0).toString();
+        QVariant dateVar = query.value(1);
+        QString dateStr;
+        if (dateVar.typeId() == QMetaType::QDate || dateVar.typeId() == QMetaType::QDateTime) {
+            dateStr = dateVar.toDate().toString("dd/MM/yyyy");
+        } else {
+            // Sometime Oracle dates come as strings
+            dateStr = dateVar.toString();
+            // Just take the first 10 chars if it's a long datetime string
+            if (dateStr.length() > 10) dateStr = dateStr.left(10);
+        }
+        return type + " (" + dateStr + ")";
+    }
+    
+    return "Aucune mission planifiée";
+}
+
+void ourlabib::displayWelcomeOnLcd(const QString &name, const QString &mission) {
+    if (!arduinoConnected) return;
+    arduino->write_to_arduino("WELCOME:" + name + ":" + mission);
+}
+
+void ourlabib::startRfidListening() {
+    if (!arduinoConnected) return;
+    qDebug() << "Écoute RFID démarrée";
+}
+
+void ourlabib::stopRfidListening() {
+    if (arduino && arduino->getserial()->isOpen()) {
+        arduino->getserial()->close();
+    }
+    arduinoConnected = false;
 }

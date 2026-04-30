@@ -5,6 +5,7 @@
 #include <QModelIndex>
 #include "missions.h"
 #include "employes.h"
+#include "arduino.h"
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
@@ -103,7 +104,7 @@ private slots:
     void on_btnRetourQRCode_clicked();
     void on_btnConfigFaceID_clicked();
 
-    // Boutons action EmployÃ©s
+    // Boutons action Employés
     void on_btnStatistiquesEmployes_clicked();
     void on_btnExportEmploye_clicked();
     void on_btnTrierEmploye_clicked();
@@ -113,6 +114,7 @@ private slots:
     void on_btnRetourStatsEmploye_clicked();
     void on_btnRetourExportEmploye_clicked();
     void on_btnRetourTrierEmploye_clicked();
+    void on_btnScanRfidEmploye_clicked(); // RFID scan button
 
     // Boutons header Ã‰quipes
     void on_btnTrierEquipeHeader_clicked();
@@ -183,6 +185,16 @@ private slots:
 private:
     Ui::ourlabib *ui;
     int lastPageIndex = 1;
+
+    // Arduino & RFID
+    Arduino *arduino;
+    bool arduinoConnected;
+    void connectArduino();
+    void startRfidListening();
+    void stopRfidListening();
+    void onRfidRead(const QString &uid);
+    QString getEmployeeMission(int employeeId);
+    void displayWelcomeOnLcd(const QString &name, const QString &mission);
 
     // Fonctions de rafraÃ®chissement
     void refreshEquipesTable();

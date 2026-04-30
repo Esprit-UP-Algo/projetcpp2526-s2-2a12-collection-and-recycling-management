@@ -13,7 +13,7 @@ public:
     Employe();
     Employe(int id, QString nom, QString email, QString poste,
             QString disponibilite, int heuresTravail,
-            double salaire, QString sexe, int idEquipe = 1);
+            double salaire, QString sexe, QString rfidUid, int idEquipe = 1);
 
     // CRUD
     bool ajouter();
@@ -32,6 +32,7 @@ public:
     int     getHeuresTravail() const { return heuresTravail; }
     double  getSalaire()       const { return salaire; }
     QString getSexe()          const { return sexe; }
+    QString getRfidUid()       const { return rfid_uid; }
     int     getIdEquipe()      const { return idEquipe; }
 
     // Setters
@@ -42,6 +43,7 @@ public:
     void setHeuresTravail(int h)            { heuresTravail = h; }
     void setSalaire(double s)               { salaire = s; }
     void setSexe(const QString &s)          { sexe = s; }
+    void setRfidUid(const QString &r)       { rfid_uid = r; }
     void setIdEquipe(int id)                { idEquipe = id; }
 
 private:
@@ -53,6 +55,7 @@ private:
     int     heuresTravail;
     double  salaire;
     QString sexe;
+    QString rfid_uid;
     int     idEquipe;
 };
 
