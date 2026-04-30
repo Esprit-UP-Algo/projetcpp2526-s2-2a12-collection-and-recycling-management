@@ -1,7 +1,8 @@
-﻿#include "missions.h"
+#include "missions.h"
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDebug>
+#include "connection.h"
 
 Missions::Missions() {
     id = 0;
@@ -46,15 +47,23 @@ bool Missions::ajouter() {
 }
 
 QSqlQueryModel* Missions::afficher() {
+    Connection *c = Connection::instance();
     QSqlQueryModel* model = new QSqlQueryModel();
-    model->setQuery("SELECT ID_MISSION, TYPE, DATE_MISSION, DUREE, ETAT, PRIORITE, ID_EQUIPE, ID_ZONE FROM MISSION ORDER BY DATE_MISSION DESC");
+    QString queryStr = "SELECT ID_MISSION, TYPE, DATE_MISSION, DUREE, ETAT, PRIORITE, ID_EQUIPE, ID_ZONE FROM MISSIONS ORDER BY DATE_MISSION DESC";
+    
+    model->setQuery(queryStr, c->getDatabase());
+    if (model->lastError().isValid() || model->rowCount() == 0) {
+        queryStr = "SELECT ID_MISSION, TYPE, DATE_MISSION, DUREE, ETAT, PRIORITE, ID_EQUIPE, ID_ZONE FROM MISSION ORDER BY DATE_MISSION DESC";
+        model->setQuery(queryStr, c->getDatabase());
+    }
+
     model->setHeaderData(0, Qt::Horizontal, QObject::tr("ID Mission"));
     model->setHeaderData(1, Qt::Horizontal, QObject::tr("Type"));
     model->setHeaderData(2, Qt::Horizontal, QObject::tr("Date"));
-    model->setHeaderData(3, Qt::Horizontal, QObject::tr("DurÃ©e (min)"));
-    model->setHeaderData(4, Qt::Horizontal, QObject::tr("Ã‰tat"));
-    model->setHeaderData(5, Qt::Horizontal, QObject::tr("PrioritÃ©"));
-    model->setHeaderData(6, Qt::Horizontal, QObject::tr("ID Ã‰quipe"));
+    model->setHeaderData(3, Qt::Horizontal, QObject::tr("Durée (min)"));
+    model->setHeaderData(4, Qt::Horizontal, QObject::tr("État"));
+    model->setHeaderData(5, Qt::Horizontal, QObject::tr("Priorité"));
+    model->setHeaderData(6, Qt::Horizontal, QObject::tr("ID Équipe"));
     model->setHeaderData(7, Qt::Horizontal, QObject::tr("ID Zone"));
     return model;
 }

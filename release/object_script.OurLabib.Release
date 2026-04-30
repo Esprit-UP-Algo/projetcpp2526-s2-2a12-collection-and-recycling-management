@@ -1,0 +1,12 @@
+release/arduino.o
+release/connection.o
+release/employes.o
+release/equipes.o
+release/login.o
+release/main.o
+release/missions.o
+release/ourlabib.o
+release/poubelles.o
+release/zones.o
+release/qrc_src.o
+release/moc_ourlabib.o

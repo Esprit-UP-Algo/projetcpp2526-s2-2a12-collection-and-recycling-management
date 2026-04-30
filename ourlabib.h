@@ -5,12 +5,18 @@
 #include <QModelIndex>
 #include "missions.h"
 #include "employes.h"
+#include "arduino.h"
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
+#include "zonechatbot.h"
+#include "twillio.h"
+#include "chatbotequie.h"
+#include "mapzones.h"
+#include "qrender.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class ourlabib; }
@@ -30,7 +36,7 @@ private slots:
     void on_btnLogout_clicked();
     void on_btnFaceID_clicked();
 
-    // AccÃ¨s aux pages
+    // Accès aux pages
     void on_btnEmployes_clicked();
     void on_btnEquipes_clicked();
     void on_btnZones_clicked();
@@ -44,7 +50,7 @@ private slots:
     void on_btnRetourPoubelles_clicked();
     void on_btnRetourMissions_clicked();
 
-    // ========== GESTION Ã‰QUIPES ==========
+    // ========== GESTION ÉQUIPES ==========
     void on_enrgstEQ_clicked();
     void on_modifEQ_clicked();
     void on_supEQ_clicked();
@@ -81,14 +87,10 @@ private slots:
     void on_btnStatistiquesPoubelles_clicked();
     void on_btnExportPoubelle_clicked();
 
-    // Fonctions supplÃ©mentaires
+    // Fonctions supplémentaires
     void on_btnMap_clicked();
     void on_btnRetourMap_clicked();
-    void on_btnChatbot_clicked();
-    void on_btnRetourChatbot_clicked();
-    void on_btnSendMessage_clicked();
-    void on_btnChatbotEquipes_clicked();
-    void on_btnChatbotPoubelles_clicked();
+
     void on_btnSMS_clicked();
     void on_btnRetourSMS_clicked();
     void on_btnEnvoyerSMS_clicked();
@@ -103,7 +105,7 @@ private slots:
     void on_btnRetourQRCode_clicked();
     void on_btnConfigFaceID_clicked();
 
-    // Boutons action EmployÃ©s
+    // Boutons action Employés
     void on_btnStatistiquesEmployes_clicked();
     void on_btnExportEmploye_clicked();
     void on_btnTrierEmploye_clicked();
@@ -113,8 +115,37 @@ private slots:
     void on_btnRetourStatsEmploye_clicked();
     void on_btnRetourExportEmploye_clicked();
     void on_btnRetourTrierEmploye_clicked();
+    void on_btnScanRfidEmploye_clicked(); // RFID scan button
 
-    // Boutons header Ã‰quipes
+    // Chatbot and Integrations Slots
+    void onResponseReceived(const QString &response);
+    void onErrorOccurred(const QString &error);
+    void onChatbotProcessingFinished();
+    void appendBotMessage(const QString &message);
+    void appendErrorMessage(const QString &message);
+    void on_btnChatbot_clicked();
+    void on_btnChatbotEquipes_clicked();
+    void on_btnChatbotPoubelles_clicked();
+    void on_btnRetourChatbot_clicked();
+    void executeZoneInsertion(const QString &nom, const QString &loc, int pop, const QString &surface);
+    void onSmsSent(const QString& sid);
+    void onSmsError(const QString& errorMsg, int statusCode);
+    void onTwilioReplyFinished(QNetworkReply *reply);
+    void onEquipeChatbotResponse(const QString &response);
+    void onEquipeChatbotFinished();
+    void onEquipeUpdateRequested(const QString &nomEquipe, const QString &champ, const QString &valeur);
+
+    void loadZonesOnMap();
+    void initMap();
+    bool isTunisianMobileNumber(int phone_int);
+    QString convertIntToInternational(int phone_int);
+    void sendWelcomeMessage(int phone_int, const QString& name);
+    void on_ZoneChatbot_clicked();
+    void on_chatBtnequipe_clicked();
+    void on_chatBtnZone_clicked();
+    void on_chatBtnPoubelle_clicked();
+
+    // Boutons header Équipes
     void on_btnTrierEquipeHeader_clicked();
     void on_btnStatsEquipeHeader_clicked();
     void on_btnExportEquipeHeader_clicked();
@@ -168,9 +199,11 @@ private slots:
     void on_btnRefreshMission_clicked();
 
 
-    // ========== GESTION EMPLOYÃ‰S ==========
+    // ========== GESTION EMPLOYÉS ==========
     void loadEquipes();
     void loadMissionsCombos();
+    void loadZonesCombo();
+    void loadChefsEquipe();
     void afficherStatsEmployes();
     void on_tableEmployes_clicked(const QModelIndex &index);
     void on_btnEnregistrerEmploye_clicked();
@@ -184,7 +217,17 @@ private:
     Ui::ourlabib *ui;
     int lastPageIndex = 1;
 
-    // Fonctions de rafraÃ®chissement
+    // Arduino & RFID
+    Arduino *arduino;
+    bool arduinoConnected;
+    void connectArduino();
+    void startRfidListening();
+    void stopRfidListening();
+    void onRfidRead(const QString &uid);
+    QString getEmployeeMission(int employeeId);
+    void displayWelcomeOnLcd(const QString &name, const QString &mission);
+
+    // Fonctions de rafraîchissement
     void refreshEquipesTable();
     void refreshZonesTable();
     void refreshPoubellesTable();
@@ -204,7 +247,7 @@ private:
     QString currentRole;
     bool isLoggedIn;
 
-    // MÃ©thodes de session
+    // Méthodes de session
     bool loginUser(const QString& username, const QString& password);
     void logoutUser();
     bool hasAccess(const QString& module);
@@ -218,6 +261,16 @@ private:
     void exporterMissionsPDF();
     Missions missionTmp;
     void envoyerEmailResend(QString dest, QString sujet, QString corpsHtml);
+
+    // Integrations
+    ZoneChatbot *zonechatbot;
+    twillio *twilio;
+    chatbotEquie *chatbotEQ;
+    QNetworkAccessManager *networkManager;
+    QString twilio_account_sid;
+    QString twilio_auth_token;
+    QString twilio_from_number;
+    MapZones mapZones;
 };
 
 #endif // OURLABIB_H

@@ -1,16 +1,18 @@
-﻿#include "employes.h"
+#include "employes.h"
 #include "connection.h"
 #include <QDebug>
+#include <QSqlQuery>
+#include <QSqlError>
 
 Employe::Employe()
-    : id(0), heuresTravail(0), salaire(0.0), idEquipe(1) {}
+    : id(0), heuresTravail(0), salaire(0.0), rfid_uid(""), idEquipe(1) {}
 
 Employe::Employe(int id, QString nom, QString email, QString poste,
                  QString disponibilite, int heuresTravail,
-                 double salaire, QString sexe, int idEquipe)
+                 double salaire, QString sexe, QString rfidUid, int idEquipe)
     : id(id), nom(nom), email(email), poste(poste),
-    disponibilite(disponibilite), heuresTravail(heuresTravail),
-    salaire(salaire), sexe(sexe), idEquipe(idEquipe) {}
+      disponibilite(disponibilite), heuresTravail(heuresTravail),
+      salaire(salaire), sexe(sexe), rfid_uid(rfidUid), idEquipe(idEquipe) {}
 
 bool Employe::ajouter() {
     Connection *c = Connection::instance();
@@ -23,9 +25,9 @@ bool Employe::ajouter() {
     QSqlQuery query(c->getDatabase());
 
     query.prepare("INSERT INTO EMPLOYE "
-                  "(NOM, EMAIL, POSTE, DISPONIBILITE, HEURES_TRAVAIL, SALAIRE, SEXE, ID_EQUIPE) "
+                  "(NOM, EMAIL, POSTE, DISPONIBILITE, HEURES_TRAVAIL, SALAIRE, SEXE, RFID_UID, ID_EQUIPE) "
                   "VALUES "
-                  "(:nom, :email, :poste, :dispo, :heures, :salaire, :sexe, :id_equipe)");
+                  "(:nom, :email, :poste, :dispo, :heures, :salaire, :sexe, :rfid_uid, :id_equipe)");
 
     query.bindValue(":nom", nom);
     query.bindValue(":email", email);
@@ -34,6 +36,7 @@ bool Employe::ajouter() {
     query.bindValue(":heures", heuresTravail);
     query.bindValue(":salaire", salaire);
     query.bindValue(":sexe", sexe);
+    query.bindValue(":rfid_uid", rfid_uid);
     query.bindValue(":id_equipe", idEquipe);
 
     bool ok = query.exec();
@@ -90,6 +93,7 @@ bool Employe::modifier(int id) {
                   "HEURES_TRAVAIL= :heures, "
                   "SALAIRE       = :salaire,"
                   "SEXE          = :sexe,   "
+                  "RFID_UID      = :rfid_uid, "
                   "ID_EQUIPE     = :id_equipe "
                   "WHERE ID_EMPLOYE = :id");
 
@@ -100,6 +104,7 @@ bool Employe::modifier(int id) {
     query.bindValue(":heures", heuresTravail);
     query.bindValue(":salaire", salaire);
     query.bindValue(":sexe", sexe);
+    query.bindValue(":rfid_uid", rfid_uid);
     query.bindValue(":id_equipe", idEquipe);
     query.bindValue(":id", id);
 
@@ -111,17 +116,19 @@ bool Employe::modifier(int id) {
 }
 
 QSqlQueryModel* Employe::afficher() {
+    Connection *c = Connection::instance();
     QSqlQueryModel *model = new QSqlQueryModel();
 
-    model->setQuery(
-        "SELECT e.ID_EMPLOYE, e.NOM, e.EMAIL, e.POSTE, "
-        "e.DISPONIBILITE, e.HEURES_TRAVAIL, e.SALAIRE, e.SEXE, "
-        "eq.NOM_EQUIPE "
-        "FROM EMPLOYE e "
-        "LEFT JOIN EQUIPE eq ON e.ID_EQUIPE = eq.ID_EQUIPE "
-        "ORDER BY e.ID_EMPLOYE",
-        Connection::instance()->getDatabase()
-        );
+    QString queryStr = "SELECT e.ID_EMPLOYE, e.NOM, e.EMAIL, e.POSTE, e.DISPONIBILITE, e.HEURES_TRAVAIL, e.SALAIRE, e.SEXE, e.RFID_UID, eq.NOM_EQUIPE "
+                       "FROM EMPLOYE e LEFT JOIN EQUIPES eq ON e.ID_EQUIPE = eq.ID_EQUIPE ORDER BY e.ID_EMPLOYE";
+    
+    model->setQuery(queryStr, c->getDatabase());
+    
+    if (model->lastError().isValid() || model->rowCount() == 0) {
+        queryStr = "SELECT e.ID_EMPLOYE, e.NOM, e.EMAIL, e.POSTE, e.DISPONIBILITE, e.HEURES_TRAVAIL, e.SALAIRE, e.SEXE, e.RFID_UID, eq.NOM_EQUIPE "
+                   "FROM EMPLOYE e LEFT JOIN EQUIPE eq ON e.ID_EQUIPE = eq.ID_EQUIPE ORDER BY e.ID_EMPLOYE";
+        model->setQuery(queryStr, c->getDatabase());
+    }
 
     model->setHeaderData(0, Qt::Horizontal, "ID");
     model->setHeaderData(1, Qt::Horizontal, "Nom");
@@ -131,7 +138,8 @@ QSqlQueryModel* Employe::afficher() {
     model->setHeaderData(5, Qt::Horizontal, "Heures/Sem");
     model->setHeaderData(6, Qt::Horizontal, "Salaire (DT)");
     model->setHeaderData(7, Qt::Horizontal, "Sexe");
-    model->setHeaderData(8, Qt::Horizontal, "Equipe");
+    model->setHeaderData(8, Qt::Horizontal, "RFID UID");
+    model->setHeaderData(9, Qt::Horizontal, "Equipe");
 
     return model;
 }
@@ -142,31 +150,42 @@ QSqlQueryModel* Employe::rechercher(const QString &valeur, const QString &criter
 
     QString condition;
     if (critere.toUpper() == "NOM") {
-        condition = "e.NOM LIKE :val";
+        condition = "UPPER(e.NOM) LIKE UPPER(:val)";
     } else if (critere.toUpper() == "EMAIL") {
-        condition = "e.EMAIL LIKE :val";
+        condition = "UPPER(e.EMAIL) LIKE UPPER(:val)";
     } else if (critere.toUpper() == "POSTE") {
-        condition = "e.POSTE LIKE :val";
+        condition = "UPPER(e.POSTE) LIKE UPPER(:val)";
     } else if (critere.toUpper() == "DISPONIBILITE") {
-        condition = "e.DISPONIBILITE LIKE :val";
+        condition = "UPPER(e.DISPONIBILITE) LIKE UPPER(:val)";
     } else {
         // Recherche globale par defaut (incluant Disponibilite)
-        condition = "(e.NOM LIKE :val OR e.EMAIL LIKE :val OR e.POSTE LIKE :val OR e.DISPONIBILITE LIKE :val)";
+        condition = "(UPPER(e.NOM) LIKE UPPER(:val) OR UPPER(e.EMAIL) LIKE UPPER(:val) OR UPPER(e.POSTE) LIKE UPPER(:val) OR UPPER(e.DISPONIBILITE) LIKE UPPER(:val))";
     }
 
-    query.prepare("SELECT e.ID_EMPLOYE, e.NOM, e.EMAIL, e.POSTE, "
-                  "e.DISPONIBILITE, e.HEURES_TRAVAIL, e.SALAIRE, e.SEXE, "
-                  "eq.NOM_EQUIPE "
-                  "FROM EMPLOYE e "
-                  "LEFT JOIN EQUIPE eq ON e.ID_EQUIPE = eq.ID_EQUIPE "
-                  "WHERE " + condition + " "
-                  "ORDER BY e.ID_EMPLOYE");
-    query.bindValue(":val", "%" + valeur + "%");
+    QString baseQuery = "SELECT e.ID_EMPLOYE, e.NOM, e.EMAIL, e.POSTE, e.DISPONIBILITE, e.HEURES_TRAVAIL, e.SALAIRE, e.SEXE, e.RFID_UID, eq.NOM_EQUIPE "
+                        "FROM %1 e LEFT JOIN %2 eq ON e.ID_EQUIPE = eq.ID_EQUIPE "
+                        "WHERE " + condition + " "
+                        "ORDER BY e.ID_EMPLOYE";
 
+    // Essai 1: EMPLOYE + EQUIPES
+    query.prepare(baseQuery.arg("EMPLOYE").arg("EQUIPES"));
+    query.bindValue(":val", "%" + valeur.toUpper() + "%");
+    
     if (!query.exec()) {
-        qDebug() << "[ERREUR] Employe::rechercher() :" << query.lastError().text();
-        delete model;
-        return nullptr;
+        // Essai 2: EMPLOYE + EQUIPE
+        query.prepare(baseQuery.arg("EMPLOYE").arg("EQUIPE"));
+        query.bindValue(":val", "%" + valeur.toUpper() + "%");
+        
+        if (!query.exec()) {
+            // Essai 3: EMPLOYES + EQUIPES
+            query.prepare(baseQuery.arg("EMPLOYES").arg("EQUIPES"));
+            query.bindValue(":val", "%" + valeur.toUpper() + "%");
+            
+            if (!query.exec()) {
+                qDebug() << "[ERREUR] Employe::rechercher() final fallback failed:" << query.lastError().text();
+                return model; 
+            }
+        }
     }
 
     model->setQuery(std::move(query));
@@ -178,10 +197,14 @@ QSqlQueryModel* Employe::rechercher(const QString &valeur, const QString &criter
     model->setHeaderData(5, Qt::Horizontal, "Heures/Sem");
     model->setHeaderData(6, Qt::Horizontal, "Salaire (DT)");
     model->setHeaderData(7, Qt::Horizontal, "Sexe");
-    model->setHeaderData(8, Qt::Horizontal, "Equipe");
+    model->setHeaderData(8, Qt::Horizontal, "RFID UID");
+    model->setHeaderData(9, Qt::Horizontal, "Equipe");
 
     return model;
 }
+
+
+
 QSqlQueryModel* Employe::trier(const QString &critere, const QString &ordre) {
     QSqlQueryModel *model = new QSqlQueryModel();
 
@@ -194,25 +217,30 @@ QSqlQueryModel* Employe::trier(const QString &critere, const QString &ordre) {
     QString ord = ordresValides.contains(ordre.toUpper())
                       ? ordre.toUpper() : "ASC";
 
-    model->setQuery(
-        "SELECT e.ID_EMPLOYE, e.NOM, e.EMAIL, e.POSTE, "
-        "e.DISPONIBILITE, e.HEURES_TRAVAIL, e.SALAIRE, e.SEXE, "
-        "eq.NOM_EQUIPE "
-        "FROM EMPLOYE e "
-        "LEFT JOIN EQUIPE eq ON e.ID_EQUIPE = eq.ID_EQUIPE "
-        "ORDER BY " + col + " " + ord,
-        Connection::instance()->getDatabase()
-        );
+    QString sql = "SELECT e.ID_EMPLOYE, e.NOM, e.EMAIL, e.POSTE, e.DISPONIBILITE, e.HEURES_TRAVAIL, e.SALAIRE, e.SEXE, e.RFID_UID, eq.NOM_EQUIPE "
+                  "FROM EMPLOYE e LEFT JOIN EQUIPES eq ON e.ID_EQUIPE = eq.ID_EQUIPE ORDER BY " + col + " " + ord;
+    
+    model->setQuery(sql, Connection::instance()->getDatabase());
+    
+    if (model->lastError().isValid()) {
+        sql = "SELECT e.ID_EMPLOYE, e.NOM, e.EMAIL, e.POSTE, e.DISPONIBILITE, e.HEURES_TRAVAIL, e.SALAIRE, e.SEXE, e.RFID_UID, eq.NOM_EQUIPE "
+              "FROM EMPLOYE e LEFT JOIN EQUIPE eq ON e.ID_EQUIPE = eq.ID_EQUIPE ORDER BY " + col + " " + ord;
+        model->setQuery(sql, Connection::instance()->getDatabase());
+    }
 
     model->setHeaderData(0, Qt::Horizontal, "ID");
     model->setHeaderData(1, Qt::Horizontal, "Nom");
     model->setHeaderData(2, Qt::Horizontal, "Email");
     model->setHeaderData(3, Qt::Horizontal, "Poste");
-    model->setHeaderData(4, Qt::Horizontal, "DisponibilitÃ©");
+    model->setHeaderData(4, Qt::Horizontal, "Disponibilite");
     model->setHeaderData(5, Qt::Horizontal, "Heures/Sem");
     model->setHeaderData(6, Qt::Horizontal, "Salaire (DT)");
     model->setHeaderData(7, Qt::Horizontal, "Sexe");
-    model->setHeaderData(8, Qt::Horizontal, "Ã‰quipe");
+    model->setHeaderData(8, Qt::Horizontal, "RFID UID");
+    model->setHeaderData(9, Qt::Horizontal, "Equipe");
 
     return model;
 }
+
+
+

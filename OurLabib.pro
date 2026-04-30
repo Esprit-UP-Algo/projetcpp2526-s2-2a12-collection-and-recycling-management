@@ -1,36 +1,37 @@
-QT += sql printsupport charts network
-QT += core gui  serialport
-CONFIG += console
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT += core gui widgets sql network charts quick quickwidgets serialport printsupport
 
 CONFIG += c++17
 
-# You can make your code fail to compile if it uses deprecated APIs.
-# In order to do so, uncomment the following line.
-#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
-
 SOURCES += \
-    arduino.cpp \
-    connection.cpp \
-    employes.cpp \
-    equipes.cpp \
-    login.cpp \
     main.cpp \
-    missions.cpp \
     ourlabib.cpp \
-    poubelles.cpp \
-    zones.cpp
+    gestion_equipe.cpp \
+    zones.cpp \
+    chatbotequie.cpp \
+    zonechatbot.cpp \
+    twillio.cpp \
+    mapzones.cpp \
+    connection.cpp \
+    arduino.cpp \
+    employes.cpp \
+    login.cpp \
+    missions.cpp \
+    poubelles.cpp
 
 HEADERS += \
-    arduino.h \
-    connection.h \
-    employes.h \
-    equipes.h \
-    missions.h \
     ourlabib.h \
+    gestion_equipe.h \
+    zones.h \
+    chatbotequie.h \
+    zonechatbot.h \
+    twillio.h \
+    mapzones.h \
+    connection.h \
+    arduino.h \
+    employes.h \
+    missions.h \
     poubelles.h \
-    zones.h
+    qrender.h
 
 FORMS += \
     ourlabib.ui
@@ -59,4 +60,3 @@ LIBS += -L$$OPENCV_ROOT/x64/mingw/lib \
         -lopencv_highgui455 \
         -lopencv_videoio455 \
         -lopencv_objdetect455
-

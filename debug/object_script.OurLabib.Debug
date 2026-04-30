@@ -1,0 +1,12 @@
+debug/arduino.o
+debug/connection.o
+debug/employes.o
+debug/equipes.o
+debug/login.o
+debug/main.o
+debug/missions.o
+debug/ourlabib.o
+debug/poubelles.o
+debug/zones.o
+debug/qrc_src.o
+debug/moc_ourlabib.o

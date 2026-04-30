@@ -1,5 +1,5 @@
-#ifndef EQUIPES_H
-#define EQUIPES_H
+#ifndef EQUIPE_H
+#define EQUIPE_H
 
 #include <QSqlQuery>
 #include <QSqlQueryModel>
@@ -9,43 +9,39 @@
 class Gestion_equipe
 {
 private:
-    int idEquipe;
-    QString nomEquipe;
-    QString zoneEquipe;
-    QString chefEquipe;
-    int nbEquipe;
+    QString nomEquipe, zoneEquipe, chefEquipe, statutEquipe;
     QDate datemission;
-    QString statutEquipe;
+    int idEquipe, nbEquipe;
 
 public:
     Gestion_equipe();
-    Gestion_equipe(int, QString, QString, QString, int, QDate, QString);
+    Gestion_equipe(int id, QString nom, QString zone, QString chef, int nb, QDate date, QString statut);
 
     // Getters
-    int getIdEquipe() const { return idEquipe; }
     QString getNomEquipe() const { return nomEquipe; }
     QString getZoneEquipe() const { return zoneEquipe; }
     QString getChefEquipe() const { return chefEquipe; }
-    int getNbEquipe() const { return nbEquipe; }
-    QDate getDateMission() const { return datemission; }
     QString getStatutEquipe() const { return statutEquipe; }
+    QDate getDateMission() const { return datemission; }
+    int getIdEquipe() const { return idEquipe; }
+    int getNbEquipe() const { return nbEquipe; }
 
     // Setters
-    void setIdEquipe(int x) { idEquipe = x; }
     void setNomEquipe(QString x) { nomEquipe = x; }
     void setZoneEquipe(QString x) { zoneEquipe = x; }
     void setChefEquipe(QString x) { chefEquipe = x; }
-    void setNbEquipe(int x) { nbEquipe = x; }
-    void setDateMission(QDate x) { datemission = x; }
     void setStatutEquipe(QString x) { statutEquipe = x; }
+    void setDateMission(QDate x) { datemission = x; }
+    void setIdEquipe(int x) { idEquipe = x; }
+    void setNbEquipe(int x) { nbEquipe = x; }
 
     // CRUD
     bool ajouter();
     QSqlQueryModel* afficher();
-    bool supprimer(int);
-    bool modifier(int);
+    bool supprimer(int id);
+    bool modifier(int id, QString nom, QString zone, QString chef, int nb, QDate date, QString statut);
     QSqlQueryModel* trier();
-    QSqlQueryModel* rechercher(const int& idRecherche);
+    QSqlQueryModel* rechercher(QString val);
 };
 
-#endif // EQUIPES_H
+#endif // EQUIPE_H
